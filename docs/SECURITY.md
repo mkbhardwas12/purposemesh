@@ -42,7 +42,8 @@ quickly, with claims backed by tests and measured service levels.
    metadata. A client-supplied tenant/team value is never authoritative.
 5. Both the contract classification maximum and persona/subject clearance must
    cover the actual dataset and record.
-6. Row predicates are evaluated server side or compiled to a certified PEP. A UI,
+6. Row predicates are evaluated server side or compiled for a PEP by a conformant
+   adapter with published, target-version-scoped passing evidence. A UI,
    workbook, URL parameter, hidden sheet, or client calculation is not security.
 7. Data projection is allow-first. Denies and masks are additional restrictions;
    an absent or invalid allowlist releases no fields.
@@ -150,7 +151,7 @@ exist; an unconfigured request fails for lack of an approval-required contract,
 and a test-injected restricted template fails at request because the dataset is
 above the L2 confidential ceiling. The same tests must cover row predicates,
 classification ceilings, fields, and revocation at the core PDP, API, SQL path,
-and every certified target adapter.
+and every conformant target adapter's published, version-scoped test suite.
 
 ## Governed standing-access changes
 
@@ -256,8 +257,8 @@ Elasticsearch preview index patterns are
 `<sanitized-dataset-id>-<12-character-SHA-256-prefix>-*`. The native-id helper
 normalizes with NFKC, replaces unsafe characters, bounds length, and appends the
 hash prefix so two source identifiers that sanitize alike do not silently share
-a pattern. It is still preview output until a certified adapter applies and
-reads it back.
+a pattern. It is still preview output until an adapter applies and reads it back
+and publishes passing evidence scoped to that target version.
 
 Each target capability is classified as `native`, `gateway`, `projection`, or
 `unsupported` for:

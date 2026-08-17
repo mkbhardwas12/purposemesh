@@ -1,0 +1,29 @@
+# Intended public-triage taxonomy. Apply these labels in repository settings or
+# with a trusted label-sync process; this file does not mutate GitHub by itself.
+- name: bug
+  color: "d73a4a"
+  description: Confirmed behavior that does not match an implemented guarantee
+- name: security
+  color: "b60205"
+  description: Public hardening work only; vulnerabilities use private reporting
+- name: proposal
+  color: "0e8a8a"
+  description: Adapter, policy capability, or architecture proposal
+- name: conformance
+  color: "1d76db"
+  description: Reproducible fidelity, read-back, drift, rollback, or equivalence scenario
+- name: documentation
+  color: "0075ca"
+  description: Documentation or public evidence improvement
+- name: good first issue
+  color: "4fc3a1"
+  description: Small, reviewed contribution with a clear acceptance test
+- name: help wanted
+  color: "008672"
+  description: Maintainers welcome an external implementation or investigation
+- name: adapter
+  color: "0052cc"
+  description: Work on a target-native enforcement adapter
+- name: roadmap
+  color: "e4e669"
+  description: Accepted future work; not an implemented capability

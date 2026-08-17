@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PurposeMesh Complete Brief — Purpose-bound Access</title>
-  <meta name="description" content="PurposeMesh: purpose-bound access enforced across exact row, field, purpose, classification, and lifecycle boundaries.">
+  <title>PurposeMesh Technical Preview — Complete Architecture Brief</title>
+  <meta name="description" content="PurposeMesh is an open-source Technical Preview for purpose-bound authorization, locally verified today with external enforcement gated on conformant adapters and target read-back.">
   <meta name="theme-color" content="#102f2b">
   <link rel="canonical" href="https://mkbhardwas12.github.io/purposemesh/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PurposeMesh — Purpose-bound access, enforced everywhere">
-  <meta property="og:description" content="A working local authorization reference; external enforcement requires certified adapters and verified target read-back.">
+  <meta property="og:title" content="PurposeMesh Technical Preview — Purpose-bound authorization">
+  <meta property="og:description" content="Open-source Technical Preview with a working local authorization path; external enforcement requires conformant adapters and verified target read-back.">
   <meta property="og:url" content="https://mkbhardwas12.github.io/purposemesh/">
   <meta property="og:image" content="https://mkbhardwas12.github.io/purposemesh/assets/purposemesh-social-preview.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="PurposeMesh — Purpose-bound access, enforced everywhere">
-  <meta name="twitter:description" content="Working locally today; external enforcement requires certified adapters and verified target read-back.">
+  <meta name="twitter:title" content="PurposeMesh Technical Preview — Purpose-bound authorization">
+  <meta name="twitter:description" content="Working locally today; external enforcement requires conformant adapters and verified target read-back.">
   <meta name="twitter:image" content="https://mkbhardwas12.github.io/purposemesh/assets/purposemesh-social-preview.png">
   <style>
     :root {
@@ -626,12 +626,12 @@
       <span>16 August 2026</span>
     </div>
     <h1>PurposeMesh</h1>
-    <p class="deck"><strong>Purpose-bound access, enforced everywhere.</strong> Implemented today in the local React, Fastify, policy-core, and SQLite path; external enforcement requires certified adapters, successful target apply, and verified read-back. This brief separates that working reference from the application-agnostic production target.</p>
+    <p class="deck"><strong>Purpose-bound access, enforced everywhere.</strong> Public status: <strong>Technical Preview</strong>. The React, Fastify, policy-core, and SQLite path is implemented and locally verified; production identity, shared control-plane scale, and external enforcement are not. An external target becomes supported only after a conformant adapter completes apply, revoke, read-back, rollback, drift, and differential-policy tests.</p>
     <div class="status-row">
-      <span class="chip ok">Demo walkthrough ready</span>
-      <span class="chip demo">Not a production control plane</span>
-      <span class="chip">Compiler = JSON preview</span>
-      <span class="chip">No live IdP, catalog, or target adapters</span>
+      <span class="chip demo">Technical Preview</span>
+      <span class="chip ok">Local demo verified</span>
+      <span class="chip">Not production-ready</span>
+      <span class="chip">External adapters fidelity-gated</span>
     </div>
     <aside class="demo-access" aria-label="Local demo access">
       <div class="demo-access__intro">
@@ -679,7 +679,7 @@
         <li><a href="#compiler">13. AuthZEN, compiler, fidelity</a></li>
         <li><a href="#run">14. Demo and verification</a></li>
         <li><a href="#ready">15. Current vs target</a></li>
-        <li><a href="#next">16. Roadmap and references</a></li>
+        <li><a href="#next">16. Now / Next / Later roadmap</a></li>
       </ol>
     </nav>
 
@@ -687,9 +687,24 @@
       <section id="exec">
         <h2>1. Executive summary</h2>
         <p class="lead">The requirement fits PurposeMesh, but the secure answer is not “RBAC everywhere.” It is a small functional-role model combined with business DataScope, resource relationships, purpose, classification, time, and target-native enforcement.</p>
-        <p><strong>Business outcome:</strong> SAP, BW, Elasticsearch, ADF, application, and BI pipelines can land in one governed store while each team receives a different server-enforced row and field view. Five capability personas stay stable: Viewer, Operator, Data Steward, Security Auditor, and Platform Admin. A Contract Capsule says exactly which resource, rows, fields, actions, purpose, conditions, and obligations are allowed. Removing a team revokes the implemented local desired-state relationship once; verified removal at external enforcement points requires certified connectors, successful revoke, and matching target read-back.</p>
-        <p><strong>Product outcome:</strong> PurposeMesh becomes an authorization delivery and assurance plane. It evaluates new applications through a PDP and compiles legacy/data-platform policy through certified adapters. A fidelity firewall refuses any translation that would weaken row, field, masking, purpose, JIT, or audit semantics.</p>
+        <p class="note"><strong>Open-source release status · Technical Preview:</strong> use this build to evaluate the model, API, local enforcement behavior, lifecycle controls, and contributor contract. Do not use it as a production authorization control plane. The preview has no compatibility or support guarantee, enterprise identity path, multi-tenant control store, or externally verified target adapter. Every future production claim requires linked conformance evidence.</p>
+        <p><strong>Target business outcome:</strong> SAP, BW, Elasticsearch, ADF, application, and BI pipelines can land in one governed store while each team receives a different server-enforced row and field view. Five capability personas stay stable: Viewer, Operator, Data Steward, Security Auditor, and Platform Admin. A Contract Capsule says exactly which resource, rows, fields, actions, purpose, conditions, and obligations are allowed. Removing a team revokes the implemented local desired-state relationship once; verified removal at external enforcement points requires conformant adapters with published evidence, successful revoke, and matching target read-back.</p>
+        <p><strong>Target product outcome:</strong> PurposeMesh becomes an authorization delivery and assurance plane. It evaluates new applications through a PDP and compiles legacy/data-platform policy through conformant adapters. A fidelity firewall refuses any translation that would weaken row, field, masking, purpose, JIT, or audit semantics.</p>
         <p class="note"><strong>Truth as of this build:</strong> standing row and field policy works in the local core and SQLite warehouse. The console, API, minimal AuthZEN evaluation adapter, local persistence, policy explanation, lifecycle workflow, reusable content-addressed role objects, and staged workload contracts are real. Native-shaped compiler artifacts are previews; seeded fidelity gates block execution and keep apply/revoke/read-back arrays empty. External SAP, BW, Elasticsearch, ADF, warehouse-native, and BI changes are not. There is no enterprise OIDC/SCIM, catalog/lineage crawler, connector worker, target read-back, drift reconciliation, or multi-replica control store yet.</p>
+
+        <h3>How PurposeMesh fits with established authorization systems</h3>
+        <p>PurposeMesh does not claim to replace established policy engines, relationship systems, or native enforcement controls. Its intended layer is the delivery and assurance work around them: one reviewable DataScope contract, refusal of lossy target translations, governed lifecycle changes, and evidence that a target still matches policy. That differentiation remains a product hypothesis until external adapters and adopters validate it.</p>
+        <div class="matrix-scroll" role="region" aria-label="PurposeMesh positioning relative to established authorization systems" tabindex="0">
+        <table>
+          <thead><tr><th>Established capability</th><th>What it is designed to do</th><th>PurposeMesh’s intended relationship</th><th>Evidence in this preview</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://www.openpolicyagent.org/docs">OPA</a>, <a href="https://docs.cedarpolicy.com/">Cedar</a>, and <a href="https://docs.cerbos.dev/cerbos/latest/index.html">Cerbos</a></td><td>Express and evaluate authorization policy for an application or service.</td><td>Complement the decision layer with shared data-scope obligations, target delivery, lifecycle, and enforcement evidence; future PDP integrations may reuse these tools rather than recreate them.</td><td>The repository has its own local policy core and minimal application adapter. It does not yet provide interchangeable OPA, Cedar, or Cerbos backends.</td></tr>
+            <tr><td><a href="https://openfga.dev/docs/fga">OpenFGA</a> and <a href="https://authzed.com/docs/spicedb/concepts/relationships">SpiceDB</a></td><td>Model and answer relationship-based authorization questions at application scale.</td><td>Use governed resource relationships as one decision input, then add purpose, classification, rows, fields, leases, and target-state assurance where a use case requires them.</td><td>Local membership and capsule relationships are implemented; no OpenFGA or SpiceDB integration is shipped.</td></tr>
+            <tr><td>PostgreSQL RLS, Elasticsearch DLS/FLS, SAP authorization, and BI semantic security</td><td>Enforce access at the system that serves or operates on the resource.</td><td>Keep those systems as the final PEPs. A PurposeMesh adapter must translate only supported semantics and prove apply, read-back, rollback, and drift behavior.</td><td>SQLite row and field release is locally enforced. External native artifacts are blocked previews and prove no target enforcement.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="note"><strong>Claim boundary:</strong> RBAC, ABAC, ReBAC, purpose constraints, policy decision points, row security, field controls, JIT access, and reconciliation are established patterns. PurposeMesh’s proposal is their contract-and-evidence composition across heterogeneous applications and data platforms—not a claim to have invented those primitives or to be the only product combining them.</p>
       </section>
 
       <section id="walkthrough">
@@ -765,7 +780,7 @@
         <div class="truth-strip" aria-label="Required outcomes">
           <div><strong>Business outcome</strong>Reuse one governed data platform across teams without duplicating pipelines, dashboards, or tenant-specific roles.</div>
           <div><strong>Security outcome</strong>Deny by default; keep administration separate from data; prove row, field, purpose, action, time, and workload boundaries.</div>
-          <div><strong>Delivery outcome</strong>Record one relationship change and revoke local desired state now; certified connectors must later apply, read back, and reconcile that removal at every external enforcement point.</div>
+          <div><strong>Delivery outcome</strong>Record one relationship change and revoke local desired state now; conformant adapters with published evidence must later apply, read back, and reconcile that removal at every external enforcement point.</div>
         </div>
       </section>
 
@@ -783,6 +798,7 @@
 
         <h3 id="primary-use-case">Primary use case: one multi-pipeline store, many least-privilege views</h3>
         <p>S/4 vendor and purchasing data, BW process-chain events, Elasticsearch telemetry, ADF-loaded customer, transaction, and inventory data, ITSM tickets, and BOBJ operations land in one synthetic unified store containing 100,000 records by default. ACME, GLOBEX, support, application, data, and platform teams use the same physical target. The policy must isolate their rows and fields while preserving source, pipeline, and classification lineage.</p>
+        <div class="matrix-scroll" role="region" aria-label="Primary multi-pipeline least-privilege access matrix" tabindex="0">
         <table>
           <thead><tr><th>Actor</th><th>Required access</th><th>Must remain prohibited</th></tr></thead>
           <tbody>
@@ -796,6 +812,7 @@
             <tr><td>Pipeline workloads</td><td>One stage-specific read or write contract per S/4 extract, BW activation, and telemetry publication identity.</td><td>One shared service account with end-to-end source, target, secret, and payload access.</td></tr>
           </tbody>
         </table>
+        </div>
 
         <h3 id="supporting-use-cases">Supporting use cases</h3>
         <div class="use-case-grid">
@@ -805,7 +822,7 @@
           <article class="use-case-card"><span class="use-case-id">UC-04 · Workload isolation</span><h3>One identity per pipeline stage</h3><p>Bind BW extraction, activation, ADF, BOBJ, and sanitized Elasticsearch telemetry publication to different identities, resources, actions, secrets, and purposes.</p></article>
           <article class="use-case-card"><span class="use-case-id">UC-05 · Verified execution</span><h3>Authorized data view</h3><p>Open Access → Data and run a server-authorized view. Every account switch clears the prior result before another query can run.</p></article>
           <article class="use-case-card"><span class="use-case-id">UC-06 · Temporary elevation</span><h3>JIT diagnostics</h3><p>Freeze dataset, row, field, action, purpose, approval, assurance, and expiry into a revocable grant that never becomes standing access.</p></article>
-          <article class="use-case-card"><span class="use-case-id">UC-07 · Lifecycle</span><h3>One central lifecycle intent</h3><p>Add or remove a capsule membership centrally and revoke local desired state. Certified connectors must apply the target changes, read them back, and retain completion evidence before external removal is considered verified.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-07 · Lifecycle</span><h3>One central lifecycle intent</h3><p>Add or remove a capsule membership centrally and revoke local desired state. Conformant adapters with published evidence must apply the target changes, read them back, and retain completion evidence before external removal is considered verified.</p></article>
           <article class="use-case-card"><span class="use-case-id">UC-08 · Application portability</span><h3>One decision contract</h3><p>Integrate an API, dashboard, database, or enterprise platform through the same subject-action-resource-context request and typed obligations.</p></article>
         </div>
 
@@ -907,7 +924,7 @@
           <li>Account switching aborts in-flight work, clears previous rows and authorization metadata, establishes a new session, and requires a new explicit query.</li>
           <li>Platform administration provides no implicit business-data read.</li>
           <li>JIT access is independently approved, scope-frozen, time-bounded, auditable, and immediately revocable.</li>
-          <li>Offboarding closes the implemented local relationship and active elevation paths; target assignments, external sessions, and secrets close only through certified lifecycle connectors with matching read-back.</li>
+          <li>Offboarding closes the implemented local relationship and active elevation paths; target assignments, external sessions, and secrets close only through conformant lifecycle adapters with matching read-back evidence.</li>
           <li>Every decision identifies the contributing contract, capsule, obligations, and policy version.</li>
           <li>Every target adapter proves semantic fidelity before apply and supports read-back, rollback, and drift response.</li>
           <li>Unknown datasets, owners, classifications, obligations, or bypass paths remain blocked until governed.</li>
@@ -1014,7 +1031,7 @@
             <ul>
               <li>Enterprise OIDC plus authoritative HR/SCIM and managed/SPIFFE workload identity establish identity and lifecycle state.</li>
               <li>Catalog connectors supply governed schema, classification, owner, lineage, existing access, and target capability.</li>
-              <li>AuthZEN-compatible application PEPs ask a highly available PDP; legacy/data platforms receive certified native policy.</li>
+              <li>AuthZEN-compatible application PEPs ask a highly available PDP; legacy/data platforms receive adapter-verified native policy.</li>
               <li>A transactional shared store, outbox workers, read-back, drift reconciliation, rollback, offsite disaster recovery, and externally anchored append-only audit close the loop.</li>
               <li>Catalog-derived owners, configurable SoD policy, scheduled human and workload recertification, notifications, and explicit overdue consequences replace the seeded governance fixtures.</li>
             </ul>
@@ -1426,7 +1443,7 @@
         <p>Manual recertification snapshots active human assignments by assignment id and membership fingerprint, accepts attest or exact-assignment revoke decisions from an eligible non-self reviewer, and preserves the last control-plane admin. It does not schedule campaigns, notify reviewers, include workload memberships, or revoke access merely because an undecided item is overdue.</p>
 
         <h3>One offboard intent; external proof required</h3>
-        <p>PurposeMesh records one central lifecycle intent. The current build revokes locally governed access; enterprise completion requires certified connectors to execute and verify the target-specific steps below.</p>
+        <p>PurposeMesh records one central lifecycle intent. The current build revokes locally governed access; enterprise completion requires conformant adapters with published evidence to execute and verify the target-specific steps below.</p>
         <ol class="checks">
           <li>Mark team/capsule inactive so online decisions deny.</li>
           <li>Revoke sessions/refresh and update the authorization epoch.</li>
@@ -1534,7 +1551,7 @@
             </tr>
           </tbody>
         </table>
-        <p>Current compilation fails closed on unsafe predicate material and on locally known missing capabilities. It does not yet publish a discovered and certified per-version capability manifest for every target or implement native masking, general SAP dimensions, purpose/JIT delivery, connector apply, rollback, executed read-back, drift, or target audit.</p>
+        <p>Current compilation fails closed on unsafe predicate material and on locally known missing capabilities. It does not yet publish a discovered, version-scoped capability manifest with passing conformance evidence for every target or implement native masking, general SAP dimensions, purpose/JIT delivery, connector apply, rollback, executed read-back, drift, or target audit.</p>
 
         <h3>Adapter definition of done</h3>
         <ol class="checks">
@@ -1648,27 +1665,54 @@
               <li>Enterprise OIDC/BFF with protected cookies, CSRF controls, a tested response-header CSP, SCIM/HR, MFA/step-up, managed/SPIFFE workload identity, rotation, and session revocation.</li>
               <li>Catalog, schema, classification, owner, lineage, existing-entitlement, and access-path discovery.</li>
               <li>Governed five-persona templates and typed shared scopes; catalog-derived owners; configurable, organization-specific SoD policy; and scheduled human/workload recertification with notifications and explicit overdue consequences.</li>
-              <li>Broader AuthZEN resources/context, richer obligation schema, PEP SDKs and conformance; signed policy releases and discovered/version-certified adapter capability manifests.</li>
+              <li>Broader AuthZEN resources/context, richer obligation schema, PEP SDKs and conformance; signed policy releases and discovered, version-scoped adapter capability manifests.</li>
               <li>Live target plan/apply/revoke, read-back, rollback, drift, audit, and cross-target equivalence.</li>
               <li>Transactional shared state, multi-replica PDP, outbox workers, externally anchored append-only audit, offsite/encrypted backup, point-in-time recovery, and regional recovery.</li>
               <li>Real SAP/BW/ES/ADF/warehouse/BI conformance and bypass testing on the deployed versions and editions.</li>
             </ul>
           </div>
         </div>
-        <p class="note"><strong>Robustness claim:</strong> local tests demonstrate the local implementation. The current full-snapshot persistence path grows with retained audit history, and its mutable local hash chain is not an external anchor. Production robustness begins only when every real access path and target is certified, continuously reconciled, failure-tested, and independently security-reviewed.</p>
+        <p class="note"><strong>Robustness claim:</strong> local tests demonstrate the local implementation. The current full-snapshot persistence path grows with retained audit history, and its mutable local hash chain is not an external anchor. Production robustness begins only when every real access path and target has a documented passing conformance result, is continuously reconciled and failure-tested, and has undergone independent security review.</p>
       </section>
 
       <section id="next">
-        <h2>16. Delivery roadmap and primary references</h2>
+        <h2>16. Now / Next / Later delivery roadmap</h2>
+        <p class="lead">Roadmap state changes only when linked tests and public evidence satisfy the exit gate. Dates are planning windows, not production commitments; stars and page views measure awareness, not authorization correctness or adoption.</p>
+        <div class="matrix-scroll" role="region" aria-label="PurposeMesh Now Next Later delivery roadmap" tabindex="0">
+        <table>
+          <thead><tr><th>Window</th><th>Build objective</th><th>Exit evidence</th><th>Community and adopter target</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Now · 0–30 days</strong><br>First tagged v0.1 release</td>
+              <td><strong>Publish the v0.1 Technical Preview and build the PostgreSQL first adapter.</strong> Define the adapter SDK and versioned capability manifest; map eligible contracts to PostgreSQL row security and least-privilege field release; implement plan, apply, revoke, read-back, rollback, drift, and PDP-versus-target differential tests. Complete security policy, threat model, reproducible quickstart, signed release inputs, and contributor entry points.</td>
+              <td>A real ephemeral PostgreSQL target runs in CI. No target is labeled verified until positive, negative, bypass, partial-failure, stale-policy, rollback, and read-back tests pass. Publish the exact supported PostgreSQL version and semantic gaps.</td>
+              <td>5 successful external evaluations, 8 structured user interviews, 5 substantive feedback threads, at least 1 external contribution, zero open critical findings, and median first maintainer response under 48 hours.</td>
+            </tr>
+            <tr>
+              <td><strong>Next · 31–60 days</strong><br>v0.2 Interoperability Preview</td>
+              <td><strong>Full Authorization API 1.0 surface.</strong> Add single and multiple access evaluations, subject/resource/action search with pagination, PDP metadata and advertised capabilities, normative HTTPS/JSON behavior, request identifiers, and error handling. Publish a TypeScript PEP reference and conformance matrix. Run one non-demo PostgreSQL design-partner pilot.</td>
+              <td>Every implemented endpoint maps to the final <a href="https://openid.net/specs/authorization-api-1_0.html">OpenID Authorization API 1.0</a> section and automated test. The PostgreSQL pilot produces target receipts, drift detection, revoke proof, and documented limitations; “AuthZEN 1.0 conformant” is not used until the full matrix passes.</td>
+              <td>15 cumulative successful evaluations, 3 active design partners, 2 external contributors, 1 non-demo PostgreSQL pilot, and at least 30% of new issues grounded in installation or real integration work.</td>
+            </tr>
+            <tr>
+              <td><strong>Later · 61–90 days</strong><br>v0.3 Adoption Preview</td>
+              <td><strong>Elasticsearch second target.</strong> Discover deployed version, edition, and DLS/FLS capability; implement the same apply/revoke/read-back/rollback/drift and differential-test contract used for PostgreSQL. Begin enterprise OIDC, catalog/owner/classification ingestion, durable worker state, and externally anchored audit design.</td>
+              <td>Elasticsearch passes the same adapter gate without weakening purpose, row, field, masking, or audit requirements. Publish one adopter architecture, failure report, and remediation history. If the target changes because adopter evidence points elsewhere, document the decision publicly instead of silently changing the milestone.</td>
+              <td>30 cumulative successful evaluations, 2 non-demo pilots, 1 public adopter story or attributable reference, 5 external contributors, 2 verified target environments, and 1 externally reported security or correctness issue fixed transparently.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="note"><strong>Metric definitions:</strong> a successful external evaluation means a non-maintainer starts the project, compares at least two personas against the same synthetic store, confirms row/field isolation, and records the outcome. A pilot means a named owner evaluates a non-demo target with an agreed access boundary and success criterion. A target is “verified” only for the documented version, edition, configuration, and access paths that passed the conformance gate; this is project test evidence, not independent certification.</p>
+
+        <h3>After the first 90 days</h3>
         <ol>
-          <li><strong>Policy foundation.</strong> Finish five reusable capability-persona templates, typed DataScope, relationship rules, signed versions, obligation schema, and JIT negative invariants.</li>
-          <li><strong>Identity and catalog.</strong> Enterprise OIDC/SCIM, workload identity, governed inventory, owner, classification, schema, lineage, and existing-access ingestion.</li>
-          <li><strong>One real pilot.</strong> S/4 → BW process-chain/vendor monitoring → one target store → one BI model, with Vendor Ops, L2, Platform Ops, and JIT Audit.</li>
-          <li><strong>First certified adapter.</strong> Use the real warehouse first: plan, apply/revoke, read-back, drift, rollback, and PDP-versus-target differential tests.</li>
-          <li><strong>Expand deliberately.</strong> Add SAP/BW, Elasticsearch, ADF, and BI only after the adapter SDK and fidelity gate are proven. One complete adapter before another preview.</li>
-          <li><strong>Enterprise hardening.</strong> Multi-replica state, outbox workers, immutable audit, scale, recovery, chaos, independent threat review, and red-team testing.</li>
+          <li><strong>Identity and catalog.</strong> Complete enterprise OIDC/SCIM, workload identity, governed inventory, owner, classification, schema, lineage, and existing-access ingestion.</li>
+          <li><strong>One complete enterprise path.</strong> Prove S/4 → BW process-chain/vendor monitoring → governed target store → one BI model, with Vendor Ops, L2, Platform Ops, and JIT Audit.</li>
+          <li><strong>Expand one target at a time.</strong> Add SAP/BW, ADF, and BI only after the adapter SDK and fidelity gate work on PostgreSQL and Elasticsearch. Do not count a generated policy document as an integration.</li>
+          <li><strong>Enterprise hardening.</strong> Add multi-replica state, outbox workers, immutable audit, performance budgets, recovery, chaos, independent threat review, and red-team testing.</li>
         </ol>
-        <p class="note"><strong>Novelty, stated honestly:</strong> the individual controls are established patterns. The defensible product differentiation is a portable atomic access capsule, lineage-aware policy delivery, a fidelity firewall that refuses unsafe translations, access leases, and continuous proof that target state still matches policy. A claim that “nobody has done this” would require separate market and prior-art research.</p>
+        <p class="note"><strong>Differentiation, stated honestly:</strong> the individual controls are established patterns. The product thesis is that a portable atomic access capsule, lineage-aware policy delivery, a fidelity firewall that refuses unsafe translations, access leases, and continuous target-state proof can reduce authorization drift across mixed estates. External adapters, independent contributors, and adopters—not a novelty claim—must validate that thesis.</p>
 
         <h3>Primary standards and platform documentation</h3>
         <ul class="source-list">
@@ -1677,6 +1721,12 @@
           <li><a href="https://csrc.nist.gov/pubs/sp/800/207/final">NIST Zero Trust SP 800-207</a></li>
           <li><a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final">NIST SP 800-53 Rev. 5, including Update 1</a></li>
           <li><a href="https://openid.net/specs/authorization-api-1_0.html">OpenID Authorization API 1.0</a></li>
+          <li><a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html">PostgreSQL row security policies</a></li>
+          <li><a href="https://www.openpolicyagent.org/docs">Open Policy Agent documentation</a></li>
+          <li><a href="https://docs.cedarpolicy.com/">Cedar policy language documentation</a></li>
+          <li><a href="https://openfga.dev/docs/fga">OpenFGA authorization model</a></li>
+          <li><a href="https://authzed.com/docs/spicedb/concepts/relationships">SpiceDB relationships</a></li>
+          <li><a href="https://docs.cerbos.dev/cerbos/latest/index.html">Cerbos documentation</a></li>
           <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">OWASP Session Management Cheat Sheet</a></li>
           <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html">OWASP Content Security Policy Cheat Sheet</a></li>
           <li><a href="https://www.rfc-editor.org/rfc/rfc9700.html">OAuth Security BCP — RFC 9700</a></li>
@@ -1694,7 +1744,7 @@
 
   <footer class="doc-foot">
     <div>16 August 2026 · PurposeMesh · Purpose-bound access, enforced everywhere.</div>
-    <div>Working local reference · external enforcement requires certified adapters and verified read-back</div>
+    <div>Technical Preview · working local reference · external enforcement requires conformant adapters and verified read-back</div>
   </footer>
 </body>
 </html>

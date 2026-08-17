@@ -66,9 +66,9 @@
 
   <g transform="translate(915 182)">
     <rect width="295" height="330" rx="26" fill="#0b191d" stroke="#29434a" filter="url(#shadow)"/>
-    <text x="28" y="43" fill="#f2a23a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="750" letter-spacing="1.8">TESTED LOCAL EVIDENCE</text>
-    <text x="28" y="94" fill="#f4f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="780">194 / 194</text>
-    <text x="28" y="122" fill="#96aaad" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">automated checks passed</text>
+    <text x="28" y="43" fill="#f2a23a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="750" letter-spacing="1.8">TECHNICAL PREVIEW</text>
+    <text x="28" y="94" fill="#f4f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="780">196 / 196</text>
+    <text x="28" y="122" fill="#96aaad" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">automated checks passed locally</text>
     <line x1="28" y1="150" x2="267" y2="150" stroke="#29434a"/>
     <text x="28" y="198" fill="#f4f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="760">100,000</text>
     <text x="28" y="225" fill="#96aaad" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">synthetic records tested</text>
