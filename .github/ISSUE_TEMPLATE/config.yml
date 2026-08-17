@@ -3,3 +3,6 @@ contact_links:
   - name: Report a security vulnerability
     url: https://github.com/mkbhardwas12/purposemesh/security/advisories/new
     about: Use a private advisory; never disclose vulnerabilities in a public issue.
+  - name: Ask an architecture or adoption question
+    url: https://github.com/mkbhardwas12/purposemesh/discussions
+    about: Use Discussions for questions, integration ideas, and evaluation feedback.

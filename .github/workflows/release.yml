@@ -1,0 +1,53 @@
+name: Release technical preview
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Configure Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Verify tagged source
+        run: |
+          npm ci
+          npm run preflight
+          npm audit --omit=dev --audit-level=high
+      - name: Assemble preview evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          npm sbom --omit=dev --sbom-format cyclonedx > "release-assets/purposemesh-${GITHUB_REF_NAME}.cdx.json"
+          cp docs/PurposeMesh-Executive-Architecture-Briefing.pptx "release-assets/PurposeMesh-Executive-Architecture-Briefing-${GITHUB_REF_NAME}.pptx"
+          cp docs/assets/purposemesh-demo.gif "release-assets/purposemesh-demo-${GITHUB_REF_NAME}.gif"
+          cp docs/assets/purposemesh-demo.mp4 "release-assets/purposemesh-demo-${GITHUB_REF_NAME}.mp4"
+          cd release-assets
+          sha256sum ./* > SHA256SUMS
+      - name: Publish GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "${GITHUB_REF_NAME}" release-assets/*
+          --repo "${GITHUB_REPOSITORY}"
+          --verify-tag
+          --prerelease
+          --generate-notes
+          --title "PurposeMesh ${GITHUB_REF_NAME} — Technical Preview"
+          --notes "Technical preview for evaluation with synthetic data. External target adapters remain fidelity-gated until their apply, read-back, drift, rollback, and equivalence evidence is implemented."

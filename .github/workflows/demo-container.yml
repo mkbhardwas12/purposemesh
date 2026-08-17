@@ -1,0 +1,94 @@
+name: Container demo
+
+on:
+  pull_request:
+    paths:
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".dockerignore"
+      - "deploy/**"
+      - "package.json"
+      - "package-lock.json"
+      - "apps/**"
+      - "packages/**"
+      - ".github/workflows/demo-container.yml"
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".dockerignore"
+      - "deploy/**"
+      - "package.json"
+      - "package-lock.json"
+      - "apps/**"
+      - "packages/**"
+      - ".github/workflows/demo-container.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: container-demo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Validate Compose model
+        run: docker compose config --quiet
+      - name: Build technical-preview images
+        run: docker compose build
+      - name: Start and wait for healthy services
+        run: docker compose up --detach --wait --wait-timeout 180
+      - name: Exercise gateway, scoped data, and admin separation
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error http://127.0.0.1:5173/ > /dev/null
+          curl --fail --silent --show-error http://127.0.0.1:5173/api/ready \
+            | jq -e '.ok == true and .persistence == "ready"' > /dev/null
+
+          vendor_login=$(curl --fail --silent --show-error \
+            --header 'content-type: application/json' \
+            --data '{"username":"emma.acme","password":"cca-demo"}' \
+            http://127.0.0.1:5173/api/auth/login)
+          vendor_token=$(printf '%s' "$vendor_login" | jq -er '.token')
+          vendor_data=$(curl --fail --silent --show-error \
+            --header "authorization: Bearer ${vendor_token}" \
+            'http://127.0.0.1:5173/api/warehouse/records?purpose=analytics&limit=5')
+          printf '%s' "$vendor_data" | jq -e '
+            .receipt.effect == "allow"
+            and (.records | length) == 5
+            and .visible > 0
+            and .visible < 100000
+            and .receipt.protectedFieldCount > 0
+            and ([.records[].tenant] | unique) == ["ACME"]
+          ' > /dev/null
+
+          admin_login=$(curl --fail --silent --show-error \
+            --header 'content-type: application/json' \
+            --data '{"username":"hugo.admin","password":"cca-demo"}' \
+            http://127.0.0.1:5173/api/auth/login)
+          admin_token=$(printf '%s' "$admin_login" | jq -er '.token')
+          admin_data=$(curl --fail --silent --show-error \
+            --header "authorization: Bearer ${admin_token}" \
+            'http://127.0.0.1:5173/api/warehouse/records?purpose=analytics&limit=5')
+          printf '%s' "$admin_data" | jq -e '
+            .receipt.effect == "deny"
+            and .receipt.reason == "no_contract_binding"
+            and .visible == 0
+            and (.records | length) == 0
+          ' > /dev/null
+      - name: Show service logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Stop demo and remove generated data
+        if: always()
+        run: docker compose down --volumes --remove-orphans

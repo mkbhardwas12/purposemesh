@@ -144,8 +144,8 @@ proves equivalence in this repository.
   discovery connectors.
 - Broader AuthZEN resource/context coverage, PEP SDKs, and conformance evidence
   beyond the implemented minimal dataset adapter.
-- Certified SAP S/4, BW, Elasticsearch, ADF, warehouse, API, Tableau, Power BI,
-  or Looker adapters.
+- Conformant SAP S/4, BW, Elasticsearch, ADF, warehouse, API, Tableau, Power BI,
+  or Looker adapters with published, target-version-scoped passing evidence.
 - Transactional shared control store, multi-replica PDP, outbox workers,
   normalized append-only state/audit, external immutable anchoring, encrypted
   offsite retention, and regional disaster-recovery automation.
@@ -178,7 +178,7 @@ flowchart TB
     EVIDENCE["Decision + lifecycle evidence"]
   end
 
-  subgraph targets["External enforcement — certified adapters required"]
+  subgraph targets["External enforcement — version-scoped conformance evidence required"]
     NATIVE["Native policy"]
     GATEWAY["Trusted gateway PEP"]
     PROJECTION["Isolated view / index / data product"]
@@ -564,7 +564,8 @@ manifest:
 Deployment choices are ordered: exact native policy, trusted gateway PEP,
 isolated view/index/data product, then block. Silent degradation is prohibited.
 
-A certified adapter is complete only when it supports:
+An adapter is conformant only when it publishes passing evidence scoped to the
+exact target version for:
 
 1. deterministic plan and diff;
 2. idempotent apply and revoke;
@@ -636,7 +637,7 @@ flowchart LR
   REVIEW2 --> ASSIGN["Local assignment<br/>new assignmentId"]
   ASSIGN --> DECIDE["PDP enforcement"]
   ASSIGN --> COMPILE["Compile desired state"]
-  COMPILE -. "certified target only" .-> APPLY["Apply + read back"]
+  COMPILE -. "version-scoped conformance only" .-> APPLY["Apply + read back"]
   APPLY -.-> ACTIVE["Verified external state"]
   DECIDE --> REVIEW["Recertify / expire / revoke / offboard"]
   ACTIVE -.-> REVIEW
@@ -719,8 +720,9 @@ the real IdP and target platforms.
    resource inventory, ownership, classification, and lineage.
 3. **One end-to-end pilot:** S/4 -> BW vendor process monitoring -> one target
    store -> one BI model, with Vendor Ops, L2, Platform Ops, and JIT Audit.
-4. **First certified adapter:** plan, apply/revoke, read-back, drift, rollback,
-   and cross-target equivalence. The warehouse is the simplest first PEP.
+4. **First conformant adapter:** publish target-version-scoped passing evidence
+   for plan, apply/revoke, read-back, drift, rollback, and cross-target
+   equivalence. The warehouse is the simplest first PEP.
 5. **SAP/Elasticsearch/ADF/BI adapters:** add only after the adapter SDK and
    fidelity tests are stable.
 6. **Enterprise hardening:** multi-replica state, outbox, immutable audit,

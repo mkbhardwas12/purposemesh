@@ -1,0 +1,59 @@
+name: Conformance scenario
+description: Propose a reproducible enforcement, read-back, drift, or revocation scenario.
+title: "[Conformance]: "
+labels: [conformance]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Conformance work must use synthetic or safely anonymized evidence. Never
+        include credentials, customer records, production configuration, or other
+        confidential information in a public issue.
+  - type: input
+    id: target
+    attributes:
+      label: Target and version
+      placeholder: PostgreSQL 18, OpenSearch 3, application API…
+    validations:
+      required: true
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Assurance phase
+      options:
+        - Compile and fidelity check
+        - Apply or revoke
+        - Target read-back
+        - Drift reconciliation
+        - Rollback
+        - PDP equivalence
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Contract obligations
+      description: Describe the action, row scope, fields or masks, purpose, and lifecycle boundary.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected fail-closed behavior
+      description: State what must be allowed, denied, rejected, or detected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and evidence
+      description: Provide a minimal synthetic setup, commands, and sanitized output.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public evidence safety
+      options:
+        - label: This issue contains no secrets, personal data, customer data, or production configuration.
+          required: true

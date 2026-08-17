@@ -2,10 +2,11 @@
 
 <p align="center"><strong>Purpose-bound access, enforced everywhere.</strong></p>
 
-<p align="center"><em>Implemented today in the local React/Fastify/PDP/SQLite path; external enforcement requires certified adapters, target apply, and verified read-back.</em></p>
+<p align="center"><em>Implemented today in the local React/Fastify/PDP/SQLite path; external enforcement requires a conformant adapter with published, target-version-scoped passing evidence, target apply, and verified read-back.</em></p>
 
 <p align="center">
   <a href="https://github.com/mkbhardwas12/purposemesh/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/mkbhardwas12/purposemesh/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Technical Preview" src="https://img.shields.io/badge/status-technical_preview-c65d3b?style=flat-square">
   <img alt="Node.js 24+" src="https://img.shields.io/badge/Node.js-24%2B-163a35?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-0f766e?style=flat-square&logo=typescript&logoColor=white">
   <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache--2.0-c65d3b?style=flat-square"></a>
@@ -13,10 +14,10 @@
 
 ![PurposeMesh — purpose-bound access across exact data boundaries](docs/assets/purposemesh-social-preview.png)
 
-PurposeMesh is a purpose-bound authorization control-plane reference for shared data.
-It combines a small RBAC capability vocabulary with ABAC scope and ReBAC
-relationships, then returns server-enforced row, field, purpose, classification,
-and lifecycle obligations.
+PurposeMesh is an open-source Technical Preview for **authorization enforcement
+assurance** across shared data. It combines a small RBAC capability vocabulary
+with ABAC scope and ReBAC relationships, then returns server-enforced row,
+field, purpose, classification, and lifecycle obligations.
 
 Its core policy envelope is a **Contract Capsule**: one reviewable unit that
 keeps action, data scope, fields, purpose, conditions, approvals, and expiry
@@ -24,21 +25,65 @@ together as policy moves across applications and platforms.
 
 | Tested evidence | Precise boundary | Governed lifecycle |
 |---|---|---|
-| End-to-end tests use a deterministic **100,000-record synthetic dataset** across four modeled source pipelines. | Data Owner sees the approved complete scope; vendors see only their tenant slice; platform admins see no business rows. | Independent Data Owner + Governance Admin approval, bounded JIT, recertification evidence, and one local desired-state offboarding action; external removal still requires certified connectors and matching target read-back. |
+| End-to-end tests use a deterministic **100,000-record synthetic dataset** across four modeled source pipelines. | Data Owner sees the approved complete scope; vendors see only their tenant slice; platform admins see no business rows. | Independent Data Owner + Governance Admin approval, bounded JIT, recertification evidence, and one local desired-state offboarding action; external removal still requires a conformant target adapter with published, version-scoped passing evidence and matching target read-back. |
 
 **Explore:** [90-second demo](#90-second-demo) ·
 [architecture](docs/ARCHITECTURE.md) ·
 [security model](docs/SECURITY.md) ·
+[roadmap](ROADMAP.md) ·
 [complete public brief](docs/purposemesh-complete-brief.html) ·
 [executive architecture briefing](docs/PurposeMesh-Executive-Architecture-Briefing.pptx) ·
 [contributing](CONTRIBUTING.md)
 
 > [!IMPORTANT]
-> PurposeMesh is a working, single-node reference implementation and bounded pilot
-> candidate—not a finished enterprise security product. The React/Fastify/PDP/
-> SQLite path enforces local policy now. SAP, BW, Elasticsearch, ADF, BI, IdP,
-> catalog, lineage, apply, read-back, and drift integrations remain blocked or
-> preview-only until certified adapters prove fidelity.
+> **Technical Preview.** PurposeMesh is a working, single-node reference
+> implementation and bounded pilot candidate—not a finished enterprise security
+> product. The React/Fastify/PDP/SQLite path enforces local policy now. SAP, BW,
+> Elasticsearch, ADF, BI, IdP, catalog, lineage, apply, read-back, and drift
+> integrations remain blocked or preview-only until adapters publish passing
+> conformance evidence scoped to the exact target version. See the
+> [evidence-gated roadmap](ROADMAP.md).
+
+## Why add PurposeMesh when proven authorization systems exist?
+
+PurposeMesh is designed to complement—not replace—identity providers, policy
+decision points, relationship stores, and platform-native authorization. Tools
+such as [OPA](https://www.openpolicyagent.org/docs),
+[Cedar](https://docs.cedarpolicy.com/),
+[OpenFGA](https://openfga.dev/docs/fga),
+[SpiceDB](https://authzed.com/docs/index), and
+[Apache Ranger](https://ranger.apache.org/) already solve important parts of the
+authorization problem.
+
+The gap PurposeMesh is testing is what happens **after intent or a decision
+exists**: can its row, field, purpose, lifecycle, and revocation semantics be
+translated into a target without weakening them, and can the target prove what
+it actually enforces?
+
+| Existing capability | It should remain authoritative for | PurposeMesh's intended contribution |
+|---|---|---|
+| IdP / IGA | Authentication, identity facts, groups, and lifecycle events | Bind verified identities to an explicit, reviewable data-use contract |
+| OPA / Cedar or another PDP | Policy evaluation | Carry typed enforcement obligations to the target and reject unsupported translations |
+| OpenFGA / SpiceDB | Relationship and permission facts | Combine relationships with exact row, field, purpose, classification, and expiry scope |
+| Ranger or platform-native controls | Enforcement inside a supported platform | Compare canonical intent with native target state and preserve evidence across heterogeneous targets |
+
+The long-term assurance loop is:
+
+```text
+authorization intent or decision
+  -> typed Contract Capsule
+  -> target-native compilation
+  -> fail-closed fidelity check
+  -> apply or revoke
+  -> target read-back
+  -> equivalence evidence
+  -> continuous drift reconciliation
+```
+
+This release proves the decision and data-isolation portion in the local
+reference path. It does **not** yet prove that closed loop against an external
+platform. The next adoption gate is one real adapter that passes apply, revoke,
+read-back, rollback, drift, and equivalence tests.
 
 ## 90-second demo
 
@@ -91,7 +136,8 @@ gates.
 ## Architecture at a glance
 
 Solid arrows are implemented locally. Dashed arrows are the production
-integration path and remain fail-closed until certified.
+integration path and remain fail-closed until adapter conformance is proved for
+the exact target version.
 
 ```mermaid
 flowchart LR
@@ -108,7 +154,7 @@ flowchart LR
     META["Catalog / schema / owner / lineage"] -. "trusted PIP facts" .-> PDP
     CAP --> COMPILER["Desired-state compiler"]
     COMPILER --> GATE{"Fidelity firewall"}
-    GATE -. "certified adapters only" .-> SYSTEMS["SAP / BW / Elastic / ADF<br/>warehouse / API / BI"]
+    GATE -. "conformant adapter<br/>version-scoped evidence" .-> SYSTEMS["SAP / BW / Elastic / ADF<br/>warehouse / API / BI"]
     SYSTEMS -. "read-back + drift" .-> EVIDENCE
   end
 ```
@@ -146,7 +192,8 @@ platform administrators need different rows, fields, actions, and purposes.
 Dashboard filters and copied per-tool roles do not provide a durable security
 boundary. PurposeMesh records one central onboarding or removal intent and
 revokes the implemented local desired state. Preventing residual external grants
-requires certified target connectors, successful revoke, and matching read-back.
+requires a conformant target adapter with published, version-scoped passing
+evidence, successful revoke, and matching read-back.
 
 PurposeMesh addresses this with a hybrid model:
 
@@ -179,7 +226,7 @@ remain governance administrators with zero business-data rows.
 | Identity | Demo scrypt password; production HS256 token validation contract for an upstream broker | Enterprise OIDC/BFF, SCIM lifecycle, phishing-resistant MFA, and workload identity |
 | Policy model | Personas, capsules, contracts, bindings, classification, predicates, field allow/deny lists, and JIT state | Five reusable capability personas, typed DataScope, relationships, obligations, leases, and policy versions |
 | Data knowledge | Seeded and manually registered datasets, attributes, and fields | Governed catalog, classification, ownership, schema, and lineage connectors |
-| Enforcement | Local core records and SQLite warehouse | Certified SAP, BW, Elasticsearch, ADF, warehouse, API, and BI adapters |
+| Enforcement | Local core records and SQLite warehouse | Conformant SAP, BW, Elasticsearch, ADF, warehouse, API, and BI adapters with published, target-version-scoped passing evidence |
 | Compiler | Deterministic policy hash/version, eligible assignments, local capability gates, and preview artifacts; blocked seeded policies have empty apply/revoke/read-back arrays | Version-specific adapter manifest, diff, idempotent execution, verified read-back, rollback, drift reconciliation, and equivalence proof |
 | State and recovery | One SQLite control snapshot, one writer, local hash-chained audit, and verified backup/verify/restore tooling | Transactional shared store, multiple replicas, outbox workers, external append-only audit anchoring, encrypted offsite retention, and regional recovery |
 | Role Studio | Deterministic parser and metadata preview; every assignment is a durable request requiring distinct Data Owner and Governance Admin approvals before reusable policy objects are applied | Governed five-persona templates, typed shared scopes, resource-specific ownership, configurable approval policy, and standing-access leases |
@@ -310,7 +357,7 @@ represent it.
 Requirements: Node.js 24+ and npm 11+.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -540,7 +587,17 @@ endorsement, certification, or a live connector.
   architecture, security, developer, problem/use-case, and decision-questionnaire
   briefing with speaker-note sources.
 
-The next milestone is one certified adapter end to end—plan, apply/revoke,
-read-back, drift, rollback, and PDP-equivalence testing—plus enterprise identity
-and catalog ingestion. Adding more preview targets before closing that loop would
-increase surface area without increasing assurance.
+## Future plans
+
+The next milestone is one end-to-end adapter that earns conformant status
+through published, target-version-scoped passing evidence for plan,
+apply/revoke, read-back, drift, rollback, and PDP-equivalence testing—plus a
+one-command deployment path. Later milestones cover standards interoperability,
+enterprise identity and catalog ingestion, a second independent adapter,
+resilient shared state, and independently attributable adopters. Adding more
+preview targets before closing the first adapter loop would increase surface
+area without increasing assurance.
+
+The public [roadmap](ROADMAP.md) defines the evidence required for each milestone
+and the criteria for a future stable release. Roadmap items describe direction,
+not a guarantee of delivery or production readiness.
