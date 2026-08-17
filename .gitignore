@@ -28,5 +28,5 @@ data/backups/
 # Publish the reviewed briefing only; local deck drafts and inspection output
 # remain available in the workspace but are not part of the public repository.
 docs/*.pptx
-!docs/CCA-Modern-Complete-Briefing-Final.pptx
+!docs/PurposeMesh-Executive-Architecture-Briefing.pptx
 docs/*.pptx.inspect.ndjson

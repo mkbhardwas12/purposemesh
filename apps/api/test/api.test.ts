@@ -18,7 +18,7 @@ function auth(token: string) {
   return { authorization: `Bearer ${token}` };
 }
 
-describe("CCA HTTP API", () => {
+describe("PurposeMesh HTTP API", () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {

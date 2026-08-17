@@ -1,6 +1,8 @@
-# CCA security model
+# PurposeMesh security model
 
-CCA is an authorization control plane. Authentication establishes the caller;
+**Purpose-bound access, enforced everywhere.**
+
+PurposeMesh is an authorization control plane. Authentication establishes the caller;
 authorization decides whether that caller may perform one action on one resource
 for a trusted purpose and context. A successful login, Platform Admin
 persona, compiler preview, dashboard filter, or group name is never sufficient
@@ -24,7 +26,7 @@ connectors are not present.
 8. Explainable decisions and tamper-evident evidence, with external retention and
    anchoring required for production.
 
-No system can honestly be described as impossible to compromise. CCA's target is
+No system can honestly be described as impossible to compromise. PurposeMesh's target is
 to reduce likelihood and blast radius, detect drift, fail safely, and revoke
 quickly, with claims backed by tests and measured service levels.
 
@@ -84,7 +86,7 @@ server side, unknown/mismatched resources deny, and every outcome is audited. An
 allow returns the field allow/deny lists and contract/capsule identifiers that
 the application PEP must enforce before releasing data.
 
-This endpoint currently covers CCA actions and dataset resources with purpose and
+This endpoint currently covers canonical actions and dataset resources with purpose and
 optional record context. Broader resource types, richer obligations, PEP SDKs,
 formal conformance evidence, and production identity integration remain target
 work.
@@ -437,8 +439,10 @@ target.
 - [OWASP Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
 
 Recorded local gate on 16 August 2026: all typechecks and production builds
-passed; 57 core, 83 API, and 54 web tests passed (194 total); both the
-production-only and complete dependency audits reported 0 vulnerabilities.
+passed; 57 core, 84 API, and 55 web tests passed (196 total). There were no known
+vulnerabilities reported by `npm audit` on 16 August 2026 in the complete and
+production-only dependency scans. This is point-in-time dependency evidence,
+not proof that the application or future integrations are vulnerability-free.
 
 Do not include credentials, production policy exports, customer data, secrets,
 tokens, or raw restricted logs in bug reports. Use the organization's approved

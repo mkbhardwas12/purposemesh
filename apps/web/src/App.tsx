@@ -142,9 +142,9 @@ export function App() {
 
 function BootScreen() {
   return (
-    <main className="boot-screen" aria-label="Loading CCA control plane">
+    <main className="boot-screen" aria-label="Loading PurposeMesh control plane">
       <div className="brand-mark large"><Icon name="shield" /></div>
-      <div><b>CCA Control Plane</b><span>Establishing a trusted session…</span></div>
+      <div><b>PurposeMesh Control Plane</b><span>Restoring session…</span></div>
       <div className="boot-line" />
     </main>
   );
@@ -213,17 +213,17 @@ function Login({
       <section className="login-story" aria-labelledby="login-title">
         <div className="brand-lockup">
           <div className="brand-mark"><Icon name="shield" /></div>
-          <div><b>CCA</b><span>Contract Capsule Authorization</span></div>
+          <div><b>PurposeMesh</b><span>Purpose-bound authorization</span></div>
         </div>
         <div className="login-copy">
           <div className="eyebrow">Policy that follows the work</div>
-          <h1 id="login-title">One access model.<br />Every data path.</h1>
-          <p>Purpose-bound authorization across SAP, BW, Elasticsearch, analytics, and workload identities—with explainable decisions and reversible lifecycle controls.</p>
+          <h1 id="login-title">Purpose-bound access.<br />Every governed path.</h1>
+          <p>A portable reference model for SAP, BW, Elasticsearch, analytics, and workload identities—with explainable decisions and reversible lifecycle controls across the modeled estate.</p>
         </div>
         <div className="trust-row">
-          <span><Icon name="lock" /> Deny by default</span>
-          <span><Icon name="audit" /> Evidence built in</span>
-          <span><Icon name="spark" /> Native policy output</span>
+          <span><Icon name="lock" /> Row + field obligations</span>
+          <span><Icon name="audit" /> Two-role approvals</span>
+          <span><Icon name="spark" /> Fidelity-gated plans</span>
         </div>
       </section>
 
@@ -240,9 +240,9 @@ function Login({
             </div>
           </div>
         ) : <div className="login-form-card">
-          <div className="eyebrow">Secure workspace</div>
+          <div className="eyebrow">Authorization workspace</div>
           <h2 id="signin-title">Sign in to the control plane</h2>
-          <p className="lead">Choose an identity to open its authorized data view. No records or dataset details are loaded before authentication.</p>
+          <p className="lead">Select a seeded demo persona to explore exact row and field boundaries. Production deployments authenticate through an OIDC or SAML broker.</p>
           {error && <div className="alert error" role="alert"><Icon name="warning" /><span>{error}</span></div>}
           <form onSubmit={(event) => { event.preventDefault(); void enter(username, password); }}>
             <div className="field">
@@ -392,13 +392,13 @@ function Shell({
       <button className="skip-link" type="button" inert={mobileOpen} onClick={() => document.getElementById("main-content")?.focus()}>Skip to content</button>
       <header className="mobile-bar" inert={mobileOpen}>
         <button ref={menuButtonRef} className="icon-btn" aria-label="Open navigation" aria-controls="primary-navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><Icon name="menu" /></button>
-        <div className="brand-lockup compact"><div className="brand-mark"><Icon name="shield" /></div><div><b>CCA</b><span>Control plane</span></div></div>
+        <div className="brand-lockup compact"><div className="brand-mark"><Icon name="shield" /></div><div><b>PurposeMesh</b><span>Control plane</span></div></div>
         <span className="avatar small">{initials(principal.displayName)}</span>
       </header>
       {mobileOpen && <button className="nav-backdrop" tabIndex={-1} aria-hidden="true" onClick={() => setMobileOpen(false)} />}
       <aside ref={navRef} id="primary-navigation" className={`nav ${mobileOpen ? "open" : ""}`}>
         <div className="nav-top">
-          <div className="brand-lockup compact"><div className="brand-mark"><Icon name="shield" /></div><div><b>CCA</b><span>Control plane</span></div></div>
+          <div className="brand-lockup compact"><div className="brand-mark"><Icon name="shield" /></div><div><b>PurposeMesh</b><span>Control plane</span></div></div>
           <button className="icon-btn nav-close" aria-label="Close navigation" onClick={() => setMobileOpen(false)}><Icon name="close" /></button>
         </div>
         <nav aria-label="Primary navigation">
@@ -548,8 +548,8 @@ function Architecture({ principal }: { principal: Principal }) {
     <>
       <PageHeader
         eyebrow="Architecture · Operating model"
-        title="One policy model, every application"
-        description="A portable authorization control plane for basic applications and enterprise data estates: few role families, governed scopes, purpose-bound decisions, and enforcement that fails closed."
+        title="Portable policy model"
+        description="A reference control-plane design for the modeled SAP, BW, Elasticsearch, analytics, and workload-identity estate: few role families, governed scopes, purpose-bound decisions, and fail-closed plans."
         action={<button className="btn secondary" onClick={() => setRefresh((value) => value + 1)}><Icon name="refresh" />Refresh model</button>}
       />
       {error ? <InlineError message={error} onRetry={() => setRefresh((value) => value + 1)} /> : loading || !catalog ? <ArchitectureSkeleton /> : (
@@ -561,7 +561,7 @@ function Architecture({ principal }: { principal: Principal }) {
               <p>People keep a compact capability role. Capsules carry team, tenant, purpose, and lifecycle. Data contracts decide the exact rows, fields, and actions. Removing a capsule closes the central decision path in one operation.</p>
               <div className="architecture-proof"><Icon name="shield" /><span><b>Deny by default</b> A missing identity, purpose, scope, contract, or supported enforcement capability produces no access.</span></div>
             </div>
-            <dl className="architecture-metrics" aria-label="Current control-plane inventory">
+            <dl className="architecture-metrics" aria-label="Registered control-plane inventory">
               <div><dt>Target role families</dt><dd>5</dd></div>
               <div><dt>Governed products</dt><dd>{catalog.datasets.length}</dd></div>
               <div><dt>Active scopes</dt><dd>{catalog.capsules.filter((capsule) => capsule.active).length}</dd></div>
@@ -596,7 +596,7 @@ function Architecture({ principal }: { principal: Principal }) {
           </section>
 
           <section className="architecture-section" aria-labelledby="lineage-title">
-            <SectionHeading id="lineage-title" kicker="Governed data plane" title="Catalog and lineage" description="The live catalog is the source of truth for resource identity, origin, classification, purpose contracts, and capsule bindings." />
+            <SectionHeading id="lineage-title" kicker="Governed data plane" title="Catalog and lineage" description="The scoped catalog is a registered policy inventory for resource identity, declared origin, classification, purpose contracts, and capsule bindings—not a live source-system inventory." />
             <ol className="pipeline-flow" aria-label="S/4 to consumer data lineage">
               {PIPELINE_STAGES.map((stage) => {
                 const datasets = catalog.datasets.filter((dataset) => stage.matches(dataset.id));
@@ -614,7 +614,7 @@ function Architecture({ principal }: { principal: Principal }) {
               })}
             </ol>
             <div className="catalog-table table-card">
-              <div className="table-head"><div><h2>Governed products</h2><p>Live metadata returned by the scoped catalog API</p></div><span className="secure-chip"><Icon name="data" /> {catalog.datasets.length} registered</span></div>
+              <div className="table-head"><div><h2>Governed products</h2><p>Registered policy metadata returned by the scoped catalog API</p></div><span className="secure-chip"><Icon name="data" /> {catalog.datasets.length} registered</span></div>
               <div className="table-wrap"><table><caption>Governed data-product catalog</caption><thead><tr><th scope="col">Data product</th><th scope="col">Origin</th><th scope="col">Classification</th><th scope="col">Purposes</th><th scope="col">Bound scopes</th></tr></thead><tbody>
                 {catalog.datasets.map((dataset) => {
                   const contracts = catalog.contracts.filter((contract) => contract.datasetId === dataset.id);

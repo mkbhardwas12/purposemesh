@@ -1,8 +1,10 @@
-# CCA architecture
+# PurposeMesh architecture
+
+**Purpose-bound access, enforced everywhere.**
 
 ## Decision
 
-CCA's target canonical model should be application-agnostic: not another
+PurposeMesh's target canonical model should be application-agnostic: not another
 directory of target-specific roles and not a proxy that every data byte must
 cross. The current repository applies that model to a reference estate and one
 minimal application decision adapter; universal target connectivity is not yet
@@ -13,7 +15,7 @@ implemented. The durable model is:
 
 This is intentionally evolutionary. RBAC, ABAC, relationship-aware policy,
 PDP/PEP, OIDC, SCIM, row security, and workload identity are established
-patterns. CCA's differentiator is the closed-loop delivery contract: one policy
+patterns. PurposeMesh's differentiator is the closed-loop delivery contract: one policy
 is evaluated online or compiled natively, refused when enforcement fidelity is
 insufficient, and reconciled against actual target state.
 
@@ -36,7 +38,7 @@ The shared source is not shared authority. Example consumers include:
 - Platform Operations for cross-team technical telemetry without business
   payload.
 - Data Stewards who classify and approve but do not automatically read data.
-- Platform administrators who maintain CCA but receive no implicit business-data
+- Platform administrators who maintain PurposeMesh but receive no implicit business-data
   access.
 
 The security boundary must survive direct query, export, API, dashboard, search,
@@ -75,7 +77,7 @@ enforcement.
 ### Implemented and locally enforceable
 
 - Untrusted React console calling a Fastify control API.
-- Current-principal revalidation and deny-by-default CCA core PDP.
+- Current-principal revalidation and deny-by-default PurposeMesh policy core.
 - Personas, capsules, memberships, contracts, bindings, datasets, predicates,
   classification ceilings, field allowlists/denies, JIT state, and audit events.
 - Parameterized SQL scope and allow-first projection over the local SQLite
@@ -163,7 +165,7 @@ flowchart TB
     KNOWLEDGE["Catalog • schema • classification<br/>ownership • lineage"]
   end
 
-  subgraph cca["CCA authorization control plane"]
+  subgraph cca["PurposeMesh authorization control plane"]
     UI["React console / application PEP"]
     API["Fastify control API"]
     PIP["Policy information point"]
@@ -217,7 +219,7 @@ flowchart TB
   trusted team id, or relax returned obligations.
 - **Control API / application PEP:** authenticates the current subject, validates
   trusted context, asks the PDP, enforces returned obligations, and logs use.
-- **CCA core / PDP:** evaluates canonical policy. It is not an identity provider
+- **PurposeMesh policy core / PDP:** evaluates canonical policy. It is not an identity provider
   and a valid token alone is not an authorization.
 - **PIP and catalog:** supply current identity, relationship, resource,
   classification, and lineage facts with source provenance and freshness.
@@ -239,7 +241,7 @@ flowchart TB
 | Operator | monitor, run, retry, cancel | Technical logs by default; payload access is separate |
 | Data Steward (governance) | classify, propose, approve data policy, attest | No implicit raw-data access and no self-approval |
 | Security Auditor | review decisions, evidence, drift, and control operation | Read-only evidence access; no policy mutation or implicit business-data access |
-| Platform Admin | configure CCA, connectors and deployments | Management plane only; no implicit business-data access |
+| Platform Admin | configure PurposeMesh, connectors and deployments | Management plane only; no implicit business-data access |
 
 `export`, unrestricted view, restricted fields, and break-glass are explicit
 actions or time-bounded capsules, not additional permanent roles.
@@ -276,7 +278,7 @@ scope, classification, purpose, and environment.
 sequenceDiagram
   autonumber
   actor Requester
-  participant API as CCA API
+  participant API as PurposeMesh API
   participant SoD as SoD evaluator
   actor Owner as Data Owner
   actor Admin as Governance Admin
@@ -452,7 +454,7 @@ envelope:
 
 The standard envelope makes PEP/PDP communication portable. The current API
 implements a deliberately small reference adapter at
-`POST /access/v1/evaluation`. It accepts a user/workload subject, a CCA action, a
+`POST /access/v1/evaluation`. It accepts a user/workload subject, a canonical action, a
 dataset resource, and context containing trusted purpose plus optional
 `recordId`. Non-admin callers may evaluate only themselves; a governance admin
 may evaluate another subject. For self-evaluation, the endpoint binds purpose to
@@ -470,7 +472,7 @@ after applying every mandatory obligation.
 
 ## Data knowledge, classification, and lineage
 
-CCA can only decide over facts it knows. Production requires connector-driven
+PurposeMesh can only decide over facts it knows. Production requires connector-driven
 inventory:
 
 1. Harvest systems, datasets, indexes, BW objects, semantic models, dashboards,
@@ -576,7 +578,7 @@ A certified adapter is complete only when it supports:
 
 | Platform | Correct enforcement | Caveat |
 |---|---|---|
-| S/4HANA | PFCG/authorization objects for functions; CDS DCL for instance access; narrow extraction identity | CCA emits no live S/4 policy today |
+| S/4HANA | PFCG/authorization objects for functions; CDS DCL for instance access; narrow extraction identity | PurposeMesh emits no live S/4 policy today |
 | BW/4HANA | Standard authorization for modeling/loading; analysis authorization for authorization-relevant characteristics; `S_RS_PC`/`S_RS_ADMWB` for process-chain actions | Native process monitor may need a governed query/data product for field isolation |
 | Elasticsearch | Index privileges plus read-only DLS/FLS | Multiple roles can widen access; sensitive cohorts may require separate indexes |
 | ADF | Azure management RBAC and one managed identity per pipeline/data product | ADF is orchestration, not row-level end-user security; source/target must enforce data scope |
@@ -664,7 +666,7 @@ Offboarding a team must:
 
 The current local offboard operation completes steps in desired state and returns
 pre-removal compiler previews. Because target fidelity is blocked, these do not
-form an executable external revoke plan; without live connectors CCA cannot prove
+form an executable external revoke plan; without live connectors PurposeMesh cannot prove
 external removal.
 
 The current local recertification operation can attest or remove the exact human

@@ -27,7 +27,7 @@ function saturationFor(red: number, green: number, blue: number): number {
   return delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1));
 }
 
-describe("CCA palette", () => {
+describe("PurposeMesh palette", () => {
   it("contains no named purple-family colors", () => {
     expect(stylesheet).not.toMatch(/\b(?:purple|violet|magenta|lavender|indigo|orchid|plum|fuchsia)\b/i);
   });

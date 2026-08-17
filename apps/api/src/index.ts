@@ -77,10 +77,10 @@ try {
   await app.listen({ port, host });
   app.log.info(
     { host, port, mode, warehousePath, controlPlanePath, warehouseRows: warehouse.count() },
-    "CCA control plane ready",
+    "PurposeMesh control plane ready",
   );
 } catch (error) {
-  app.log.error({ err: error }, "CCA control plane failed to start");
+  app.log.error({ err: error }, "PurposeMesh control plane failed to start");
   await app.close();
   process.exitCode = 1;
 }

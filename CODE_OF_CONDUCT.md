@@ -1,6 +1,6 @@
 # Code of conduct
 
-CCA contributors are expected to make participation safe, respectful, and
+PurposeMesh contributors are expected to make participation safe, respectful, and
 productive for everyone.
 
 ## Our standards

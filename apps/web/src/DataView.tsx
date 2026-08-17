@@ -162,7 +162,7 @@ export function AuthorizedDataView({
         <div>
           <div className="eyebrow">Access · Data</div>
           <h1 id="authorized-data-title">Authorized data view</h1>
-          <p className="lead">Run one server-enforced query to see the rows, fields, and pipeline facts released to the signed-in identity. Nothing is loaded until you run the view.</p>
+          <p className="lead">See the exact rows, fields, and pipeline lineage this identity’s assigned role can access for a selected business purpose. Every result is policy-filtered by the server.</p>
         </div>
         <div className="page-actions">
           <button className="btn secondary" onClick={switchAccount}><Icon name="signout" />Switch account</button>
@@ -216,8 +216,8 @@ export function AuthorizedDataView({
       {!hasRun ? (
         <div className="data-start-state card">
           <Icon name="data" />
-          <h2>Ready when you are</h2>
-          <p>Select the trusted purpose and run the authorized view. No record request has been sent yet.</p>
+          <h2>See your exact authorized slice</h2>
+          <p>Choose a business purpose to reveal only the rows and fields granted to this identity and role.</p>
         </div>
       ) : loading ? (
         <DataLoading />

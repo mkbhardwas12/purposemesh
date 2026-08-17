@@ -26,11 +26,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site/assets
-          cp docs/cca-complete-brief.html _site/index.html
-          cp docs/assets/* _site/assets/
+          cp docs/purposemesh-complete-brief.html _site/index.html
+          cp -R docs/assets/. _site/assets/
           cp docs/ARCHITECTURE.md _site/ARCHITECTURE.md
           cp docs/SECURITY.md _site/SECURITY.md
-          cp docs/CCA-Modern-Complete-Briefing-Final.pptx _site/CCA-Modern-Complete-Briefing-Final.pptx
+          cp docs/PurposeMesh-Executive-Architecture-Briefing.pptx _site/PurposeMesh-Executive-Architecture-Briefing.pptx
           touch _site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6

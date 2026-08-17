@@ -1,20 +1,21 @@
 {
-  "name": "cca",
+  "name": "purposemesh",
   "private": true,
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "description": "Contract Capsule Authorization — control plane, PDP, compiler, and console",
+  "description": "PurposeMesh — Purpose-bound access, enforced everywhere.",
   "author": "Manish Kumar",
-  "homepage": "https://mkbhardwas12.github.io/contract-capsule-authorization/",
+  "homepage": "https://mkbhardwas12.github.io/purposemesh/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mkbhardwas12/contract-capsule-authorization.git"
+    "url": "git+https://github.com/mkbhardwas12/purposemesh.git"
   },
   "bugs": {
-    "url": "https://github.com/mkbhardwas12/contract-capsule-authorization/issues"
+    "url": "https://github.com/mkbhardwas12/purposemesh/issues"
   },
   "keywords": [
     "authorization",
+    "purpose-bound-access",
     "rbac",
     "abac",
     "rebac",

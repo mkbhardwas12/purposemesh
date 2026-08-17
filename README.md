@@ -1,35 +1,40 @@
-# Contract Capsule Authorization (CCA)
+# PurposeMesh
 
-<p align="center"><strong>One authorization contract. Exact rows, fields,
-purpose, and lifecycle.</strong></p>
+<p align="center"><strong>Purpose-bound access, enforced everywhere.</strong></p>
+
+<p align="center"><em>Implemented today in the local React/Fastify/PDP/SQLite path; external enforcement requires certified adapters, target apply, and verified read-back.</em></p>
 
 <p align="center">
-  <a href="https://github.com/mkbhardwas12/contract-capsule-authorization/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/mkbhardwas12/contract-capsule-authorization/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/mkbhardwas12/purposemesh/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/mkbhardwas12/purposemesh/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Node.js 24+" src="https://img.shields.io/badge/Node.js-24%2B-163a35?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-0f766e?style=flat-square&logo=typescript&logoColor=white">
   <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache--2.0-c65d3b?style=flat-square"></a>
 </p>
 
-![CCA — one authorization contract for exact data boundaries](docs/assets/cca-social-preview.png)
+![PurposeMesh — purpose-bound access across exact data boundaries](docs/assets/purposemesh-social-preview.png)
 
-CCA is a purpose-bound authorization control-plane reference for shared data.
+PurposeMesh is a purpose-bound authorization control-plane reference for shared data.
 It combines a small RBAC capability vocabulary with ABAC scope and ReBAC
 relationships, then returns server-enforced row, field, purpose, classification,
 and lifecycle obligations.
 
+Its core policy envelope is a **Contract Capsule**: one reviewable unit that
+keeps action, data scope, fields, purpose, conditions, approvals, and expiry
+together as policy moves across applications and platforms.
+
 | Tested evidence | Precise boundary | Governed lifecycle |
 |---|---|---|
-| End-to-end tests use a deterministic **100,000-record synthetic dataset** across four modeled source pipelines. | Data Owner sees the approved complete scope; vendors see only their tenant slice; platform admins see no business rows. | Independent Data Owner + Governance Admin approval, bounded JIT, recertification evidence, and one-path offboarding. |
+| End-to-end tests use a deterministic **100,000-record synthetic dataset** across four modeled source pipelines. | Data Owner sees the approved complete scope; vendors see only their tenant slice; platform admins see no business rows. | Independent Data Owner + Governance Admin approval, bounded JIT, recertification evidence, and one local desired-state offboarding action; external removal still requires certified connectors and matching target read-back. |
 
 **Explore:** [90-second demo](#90-second-demo) ·
 [architecture](docs/ARCHITECTURE.md) ·
 [security model](docs/SECURITY.md) ·
-[complete public brief](docs/cca-complete-brief.html) ·
-[final presentation](docs/CCA-Modern-Complete-Briefing-Final.pptx) ·
+[complete public brief](docs/purposemesh-complete-brief.html) ·
+[executive architecture briefing](docs/PurposeMesh-Executive-Architecture-Briefing.pptx) ·
 [contributing](CONTRIBUTING.md)
 
 > [!IMPORTANT]
-> CCA is a working, single-node reference implementation and bounded pilot
+> PurposeMesh is a working, single-node reference implementation and bounded pilot
 > candidate—not a finished enterprise security product. The React/Fastify/PDP/
 > SQLite path enforces local policy now. SAP, BW, Elasticsearch, ADF, BI, IdP,
 > catalog, lineage, apply, read-back, and drift integrations remain blocked or
@@ -40,8 +45,8 @@ and lifecycle obligations.
 Requirements: Node.js 24+ and npm 11+.
 
 ```bash
-git clone https://github.com/mkbhardwas12/contract-capsule-authorization.git
-cd contract-capsule-authorization
+git clone https://github.com/mkbhardwas12/purposemesh.git
+cd purposemesh
 npm ci
 npm run dev
 ```
@@ -53,11 +58,35 @@ Open <http://127.0.0.1:5173>, use demo password `cca-demo`, then compare:
 3. `finn.globex` — GLOBEX rows only.
 4. `hugo.admin` or `iris.admin` — governance controls, zero business-data rows.
 
-No dataset metadata or records appear on the login page. After signing in, open
-**Access → Data** and choose **Run authorized view**. The 100,000-record fixture
-is test evidence for authorization isolation, not a capacity limit or benchmark.
+After signing in, open **Access → Data**, choose **Run authorized view**, and
+compare each identity's server-authorized scope. The 100,000-record fixture is
+test evidence for authorization isolation, not a capacity limit or benchmark.
 
-![Authorized data view after the server releases Dana's tested synthetic scope](docs/assets/cca-authorized-data-view.jpg)
+![Authorized data view after the server releases Dana's tested synthetic scope](docs/assets/purposemesh-authorized-data-view.jpg)
+
+## Real product walkthrough
+
+Watch the working reference flow move from an authenticated identity to an
+authorized data view, explain the active policy boundary, compare tenant-scoped
+results, author a least-privilege role, and enter the governed review lifecycle.
+
+![PurposeMesh product walkthrough showing authorization, data isolation, policy authoring, and governance](docs/assets/purposemesh-demo.gif)
+
+[▶ Watch the complete MP4 walkthrough](docs/assets/purposemesh-demo.mp4)
+
+### Product surfaces
+
+| Architecture control plane | Authorized Data Owner view |
+|---|---|
+| ![PurposeMesh architecture and enforcement boundary](docs/assets/demo/architecture-control-plane.png) | ![Complete synthetic-data scope released to the explicitly authorized Data Owner](docs/assets/demo/authorized-data-owner.png) |
+| **Scoped vendor isolation** | **Least-privilege policy authoring** |
+| ![Tenant-scoped vendor view proving role and data isolation](docs/assets/demo/scoped-vendor-view.png) | ![Role Studio composing a purpose-bound least-privilege policy](docs/assets/demo/role-studio-policy-authoring.png) |
+
+![Lifecycle access review showing independent governance evidence](docs/assets/demo/lifecycle-access-review.png)
+
+The gallery shows the actual local application. External platform adapters remain
+preview-only until they pass apply, read-back, rollback, drift, and equivalence
+gates.
 
 ## Architecture at a glance
 
@@ -68,7 +97,7 @@ integration path and remain fail-closed until certified.
 flowchart LR
   subgraph local["Implemented local reference"]
     UI["React console / application PEP"] --> API["Fastify API"]
-    API --> PDP["CCA PDP<br/>RBAC + ABAC + ReBAC"]
+    API --> PDP["PurposeMesh PDP<br/>RBAC + ABAC + ReBAC"]
     PDP --> CAP["Contract Capsule<br/>action + scope + fields + purpose"]
     CAP --> DATA["SQLite control state<br/>synthetic test warehouse"]
     API --> EVIDENCE["Decision and audit evidence"]
@@ -84,11 +113,11 @@ flowchart LR
   end
 ```
 
-![CCA architecture console showing the five-role model and governed data boundaries](docs/assets/cca-architecture-console.jpg)
+![PurposeMesh architecture console showing the five-role model and governed data boundaries](docs/assets/purposemesh-architecture-console.jpg)
 
-## How CCA knows what data exists—and who may access it
+## How PurposeMesh knows what data exists—and who may access it
 
-CCA does not guess or learn permissions from whatever a dashboard happens to
+PurposeMesh does not guess or learn permissions from whatever a dashboard happens to
 display. Today the demo uses explicitly registered synthetic datasets, schema,
 classification, ownership, lineage, identities, memberships, and contracts.
 The server combines those facts with the verified subject, requested action,
@@ -115,10 +144,11 @@ S/4HANA / BW / Elasticsearch / CRM / application sources
 Vendor operations, finance, L1/L2 support, pipeline operations, auditors, and
 platform administrators need different rows, fields, actions, and purposes.
 Dashboard filters and copied per-tool roles do not provide a durable security
-boundary. A team must be onboarded or removed once, without leaving grants in
-each target.
+boundary. PurposeMesh records one central onboarding or removal intent and
+revokes the implemented local desired state. Preventing residual external grants
+requires certified target connectors, successful revoke, and matching read-back.
 
-CCA addresses this with a hybrid model:
+PurposeMesh addresses this with a hybrid model:
 
 - **RBAC** supplies five stable capability personas: Viewer, Operator, Data
   Steward (the governance function), Security Auditor, and Platform Admin.
@@ -135,14 +165,11 @@ Platform Admin does not implicitly read business data. An enterprise-wide
 viewer is still a Viewer with an enterprise DataScope and the required
 classification clearance, normally time bounded for restricted data.
 
-The demo follows the same rule. The login page contains authentication controls
-only—no records, counts, schema, source, pipeline, or classification metadata.
-After authentication, the user opens **Access → Data** and explicitly selects
-**Run authorized view**. `dana.owner` receives the complete synthetic baseline
-through the dedicated `wh.data-owner` contract and `data-governance` purpose;
-other identities receive only their SQL-filtered rows and projected fields.
-`hugo.admin` and `iris.admin` remain governance administrators with zero
-business-data rows.
+The demo proves this boundary through ordinary server-authorized requests.
+`dana.owner` receives the complete synthetic baseline through the dedicated
+`wh.data-owner` contract and `data-governance` purpose; other identities receive
+only their SQL-filtered rows and projected fields. `hugo.admin` and `iris.admin`
+remain governance administrators with zero business-data rows.
 
 ## Current implementation versus production target
 
@@ -160,7 +187,7 @@ business-data rows.
 
 ## How a decision is made
 
-For a data request, CCA evaluates:
+For a data request, PurposeMesh evaluates:
 
 ```text
 verified subject
@@ -215,7 +242,7 @@ field projection, masking, purpose/JIT, revocation, and audit. This is the
 3. otherwise create an isolated view/index/data product;
 4. otherwise block the deployment.
 
-CCA must never silently weaken a canonical policy because a target cannot
+PurposeMesh must never silently weaken a canonical policy because a target cannot
 represent it.
 
 ## What works locally
@@ -229,7 +256,7 @@ represent it.
   `sap-s4-bw-vendor`, `sap-bw-elastic-ops`,
   `azure-adf-business-load`, and `sap-bobj-report-refresh`.
   SAP BW, Elasticsearch, ADF, and BOBJ remain lineage hops; every row has the
-  same final target, `CCA Unified Data Store`.
+  same final target, `PurposeMesh Unified Data Store`.
 - Current-subject revalidation on protected routes.
 - Strict minimal AuthZEN evaluation route over the canonical PDP, including
   self-subject isolation, trusted purpose, record lookup, obligations, and audit.
@@ -342,13 +369,11 @@ keeps its existing state. To load the expanded v3 S/4→BW→ES fixtures, sign i
 replaces all local demo policy and audit state; the operation is unavailable in
 production.
 
-To test data access, sign in and open **Access → Data** (`#/data`). The page shows
-the authenticated identity and purpose but loads zero records until **Run
-authorized view** is selected. Use **Switch account** to clear the current token,
-rows, counts, fields, receipt, and in-flight query before testing another
-identity. Compare `dana.owner`'s complete baseline with Emma's ACME slice,
-Finn's GLOBEX slice, each support/operations projection, and both administrators'
-zero-row results. Then use `hugo.admin` to offboard the ACME capsule. Emma loses that local
+To test data access, sign in, open **Access → Data** (`#/data`), and select **Run
+authorized view**. Use **Switch account** before testing another identity.
+Compare `dana.owner`'s complete baseline with Emma's ACME slice, Finn's GLOBEX
+slice, each support/operations projection, and both administrators' zero-row
+results. Then use `hugo.admin` to offboard the ACME capsule. Emma loses that local
 desired-state path while Finn's GLOBEX scope remains intact. The response
 includes pre-removal native-shaped previews, but blocked fidelity means no
 executable external revoke plan is produced or pushed.
@@ -415,18 +440,16 @@ overdue action belong in the production workflow.
 
 ## Data-access acceptance workflow
 
-1. On the login page, verify that neither the DOM nor network contains warehouse
-   rows, counts, schema, source/pipeline metadata, or a data query.
-2. Sign in as `dana.owner`, open **Access → Data**, and verify that no row query
-   runs until **Run authorized view** is selected.
-3. Run the view and verify 100,000 visible synthetic records at the default
+1. Sign in as `dana.owner`, open **Access → Data**, and select **Run authorized
+   view**.
+2. Verify 100,000 visible synthetic records at the default
    configuration, Restricted ceiling, the complete explicit
    `WAREHOUSE_ALLOWED_FIELDS` projection, contract `wh.data-owner`, capsule
    `data-governance-owner`, and purpose `data-governance`.
-4. Select **Switch account** and verify the old rows, counts, fields, receipt,
+3. Select **Switch account** and verify the old rows, counts, fields, receipt,
    token, and in-flight requests are cleared. Sign in as each remaining user and
    run a fresh view.
-5. Inspect HTTP responses—not only rendered columns—and assert the following:
+4. Inspect HTTP responses—not only rendered columns—and assert the following:
 
 The protected query is `GET /api/warehouse/records?purpose=…&cursor=…&limit=…`.
 The verified token supplies the subject; callers cannot choose another subject.
@@ -479,9 +502,11 @@ checks verify local behavior only. They do not prove SAP, BW, Elasticsearch,
 ADF, warehouse-native, or BI enforcement because no live adapters or target
 conformance environments are present.
 
-Latest full run (16 August 2026): typechecks and production builds passed; 194
-tests passed (57 core, 83 API, 54 web); both the production-only and complete
-dependency audits reported 0 vulnerabilities.
+Latest full run (16 August 2026): typechecks and production builds passed; 196
+tests passed (57 core, 84 API, 55 web). There were **no known vulnerabilities
+reported by `npm audit` on 16 August 2026** in the complete and production-only
+dependency scans. This is point-in-time dependency evidence, not proof that the
+application or its future integrations are vulnerability-free.
 
 ## Standards references
 
@@ -510,8 +535,8 @@ endorsement, certification, or a live connector.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — reference implementation and application-agnostic
   target architecture.
 - [`docs/SECURITY.md`](docs/SECURITY.md) — invariants, threat model, JIT semantics, and release gates.
-- [`docs/cca-complete-brief.html`](docs/cca-complete-brief.html) — detailed executive and developer brief.
-- [`docs/CCA-Modern-Complete-Briefing-Final.pptx`](docs/CCA-Modern-Complete-Briefing-Final.pptx) — visually verified executive,
+- [`docs/purposemesh-complete-brief.html`](docs/purposemesh-complete-brief.html) — detailed executive and developer brief.
+- [`docs/PurposeMesh-Executive-Architecture-Briefing.pptx`](docs/PurposeMesh-Executive-Architecture-Briefing.pptx) — visually verified executive,
   architecture, security, developer, problem/use-case, and decision-questionnaire
   briefing with speaker-note sources.
 

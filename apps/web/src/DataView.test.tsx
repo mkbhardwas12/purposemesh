@@ -56,7 +56,7 @@ function page(overrides: Partial<WarehouseRecordsPage> = {}): WarehouseRecordsPa
       pipeline_id: "s4-bw-vendor",
       pipeline_name: "S/4 Vendor → SAP BW → Unified Store",
       source_system: "SAP S/4HANA",
-      target_system: "CCA Unified Data Store",
+      target_system: "PurposeMesh Unified Data Store",
       product: "bw_vendor",
       tenant: "ACME",
       region: "NA",
@@ -76,7 +76,7 @@ function page(overrides: Partial<WarehouseRecordsPage> = {}): WarehouseRecordsPa
       pipelineId: "s4-bw-vendor",
       pipelineName: "S/4 Vendor → SAP BW → Unified Store",
       sourceSystem: "SAP S/4HANA",
-      targetSystem: "CCA Unified Data Store",
+      targetSystem: "PurposeMesh Unified Data Store",
       count: 12_000,
     }],
     receipt: {
@@ -117,7 +117,8 @@ describe("AuthorizedDataView", () => {
     render(<AuthorizedDataView principal={emma} onSwitchAccount={vi.fn()} />);
 
     expect(screen.getByRole("heading", { name: "Authorized data view" })).toBeInTheDocument();
-    expect(screen.getByText("Ready when you are")).toBeInTheDocument();
+    expect(screen.getByText("See your exact authorized slice")).toBeInTheDocument();
+    expect(screen.getByText(/exact rows, fields, and pipeline lineage/i)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByLabelText("Business purpose")).toHaveValue("analytics"));
     expect(query).not.toHaveBeenCalled();
 

@@ -1,4 +1,4 @@
-# CCA API
+# PurposeMesh API
 
 The API has two explicit runtime modes:
 

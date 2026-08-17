@@ -5,7 +5,7 @@ import {
   verifyControlPlaneBackup,
 } from "./control-plane-ops.js";
 
-const HELP = `CCA control-plane snapshot operations
+const HELP = `PurposeMesh control-plane snapshot operations
 
 Usage:
   npm run ops:control-plane -- backup --source <sqlite> --out <bundle-dir>

@@ -472,7 +472,7 @@ td b, .cell-sub { display: block; }
 .skeleton-stack span { height: 32px; }
 
 /* Dialogs */
-.modal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(2, 6, 8, 0.8); backdrop-filter: blur(10px); animation: veil-in 160ms ease both; }
+.modal-backdrop { position: fixed; inset: 0 0 0 272px; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(2, 6, 8, 0.8); backdrop-filter: blur(10px); animation: veil-in 160ms ease both; }
 .modal { width: min(680px, 100%); max-height: calc(100vh - 40px); overflow: auto; border: 1px solid var(--line-strong); border-radius: 18px; padding: 24px; background: linear-gradient(155deg, var(--surface-raised), var(--surface)); box-shadow: 0 34px 100px rgba(0, 0, 0, 0.64), inset 0 1px rgba(255, 255, 255, 0.035); animation: modal-in 190ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 @keyframes veil-in { from { opacity: 0; } }
 @keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(0.985); } }
@@ -907,6 +907,9 @@ pre { overflow: auto; border: 1px solid var(--line); border-radius: 9px; margin:
   .recert-layout { grid-template-columns: 1fr; }
   .campaign-rail { position: static; }
   .campaign-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .campaign-create { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .campaign-create-copy { grid-column: 1 / -1; }
+  .campaign-create .btn { width: 100%; }
 }
 
 @media (max-width: 900px) {
@@ -918,6 +921,7 @@ pre { overflow: auto; border: 1px solid var(--line); border-radius: 9px; margin:
   .nav-backdrop { position: fixed; inset: 0; z-index: 40; display: block; width: 100%; height: 100%; border: 0; background: rgba(2, 6, 8, 0.7); }
   .main { padding: 94px 20px 56px; }
   .main::before { left: 0; }
+  .modal-backdrop { inset: 0; }
   .page-head { align-items: flex-start; }
   .login-shell { grid-template-columns: 1fr; }
   .login-story { min-height: 52vh; border-right: 0; border-bottom: 1px solid var(--line); }

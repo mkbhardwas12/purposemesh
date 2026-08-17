@@ -265,6 +265,17 @@ describe("production authentication", () => {
     expect(tokenExpiresAt("not-a-jwt")).toBeUndefined();
   });
 
+  it("describes boot as session restoration without asserting trust", () => {
+    setToken("business-token");
+    vi.spyOn(api, "me").mockImplementation(() => new Promise<Principal>(() => {}));
+
+    render(<App />);
+
+    const boot = screen.getByLabelText("Loading PurposeMesh control plane");
+    expect(boot).toHaveTextContent("Restoring session…");
+    expect(boot).not.toHaveTextContent(/trusted session/i);
+  });
+
   it("enters the application through a seeded demo identity", async () => {
     vi.spyOn(api, "directory").mockResolvedValue({
       password: "cca-demo",
@@ -284,13 +295,22 @@ describe("production authentication", () => {
     const warehouseRecords = vi.spyOn(api, "warehouseRecords");
 
     render(<App />);
+    expect(await screen.findByText("PurposeMesh")).toBeInTheDocument();
+    expect(screen.getByText("Authorization workspace")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Purpose-bound access. Every governed path." })).toBeInTheDocument();
+    expect(screen.getByText(/portable reference model.*SAP, BW, Elasticsearch, analytics.*modeled estate/i)).toBeInTheDocument();
+    expect(screen.getByText(/seeded demo persona.*OIDC or SAML broker/i)).toBeInTheDocument();
+    expect(screen.queryByText(/use your organization identity/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Row + field obligations")).toBeInTheDocument();
+    expect(screen.getByText("Two-role approvals")).toBeInTheDocument();
+    expect(screen.getByText("Fidelity-gated plans")).toBeInTheDocument();
     expect(screen.queryByText(/source fixture/i)).not.toBeInTheDocument();
     expect(screen.queryByTestId("raw-source")).not.toBeInTheDocument();
     expect(await screen.findByRole("note")).toHaveTextContent("Demo passwordcca-demo");
     fireEvent.click(await screen.findByRole("button", { name: /Emma Patel/ }));
     await waitFor(() => expect(login).toHaveBeenCalledWith("emma.acme", "cca-demo"));
     expect(await screen.findByRole("heading", { name: "Authorized data view", level: 1 })).toBeInTheDocument();
-    expect(screen.getByText("Ready when you are")).toBeInTheDocument();
+    expect(screen.getByText("See your exact authorized slice")).toBeInTheDocument();
     expect(window.location.hash).toBe("#/data");
     expect(warehouseRecords).not.toHaveBeenCalled();
     expect(sessionStorage.getItem("cca.token")).toBe("business-token");
@@ -329,7 +349,7 @@ describe("production authentication", () => {
 
     expect(await screen.findByRole("heading", { name: "Authorized data view" })).toBeInTheDocument();
     expect(screen.getAllByText("Finn Okafor").length).toBeGreaterThan(0);
-    expect(screen.getByText("Ready when you are")).toBeInTheDocument();
+    expect(screen.getByText("See your exact authorized slice")).toBeInTheDocument();
     expect(warehouseRecords).not.toHaveBeenCalled();
     expect(login).toHaveBeenNthCalledWith(1, "emma.acme", "cca-demo");
     expect(login).toHaveBeenNthCalledWith(2, "finn.globex", "cca-demo");
@@ -446,9 +466,12 @@ describe("authorization-aware navigation", () => {
 
     render(<App />);
 
-    expect(await screen.findByRole("heading", { name: "One policy model, every application" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Portable policy model" })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Few roles. Precise data boundaries." })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Catalog and lineage" })).toBeInTheDocument();
+    expect(screen.getByText(/registered policy inventory.*not a live source-system inventory/i)).toBeInTheDocument();
+    expect(screen.getByText("Registered policy metadata returned by the scoped catalog API")).toBeInTheDocument();
+    expect(screen.queryByText(/source of truth/i)).not.toBeInTheDocument();
     expect(screen.getByText("S/4 vendor master")).toBeInTheDocument();
     expect(screen.getByText(/not a fabricated allow response/i)).toBeInTheDocument();
     await waitFor(() => expect(compile).toHaveBeenCalledWith("vendor-acme", expect.any(AbortSignal)));

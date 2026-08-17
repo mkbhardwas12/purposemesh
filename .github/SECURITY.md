@@ -1,5 +1,8 @@
 # Security policy
 
+This policy covers PurposeMesh, the reference implementation for purpose-bound
+access enforced across application and data boundaries.
+
 ## Supported version
 
 Security fixes are applied to the latest revision of `main`. This repository is

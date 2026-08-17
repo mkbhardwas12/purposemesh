@@ -1,6 +1,6 @@
-# Contributing to CCA
+# Contributing to PurposeMesh
 
-Thank you for helping improve Contract Capsule Authorization. CCA is a security
+Thank you for helping improve PurposeMesh. PurposeMesh is a security
 reference implementation, so changes should be small, reviewable, and explicit
 about which guarantees are implemented versus proposed.
 
@@ -14,7 +14,7 @@ about which guarantees are implemented versus proposed.
 
 ## Local workflow
 
-CCA requires Node.js 24+ and npm 11+.
+PurposeMesh requires Node.js 24+ and npm 11+.
 
 ```bash
 npm ci

@@ -17,7 +17,8 @@ import {
 } from "./sqlite-files.js";
 
 const SCHEMA_VERSION = "5";
-export const UNIFIED_DATA_STORE = "CCA Unified Data Store";
+const LEGACY_UNIFIED_DATA_STORE = "CCA Unified Data Store";
+export const UNIFIED_DATA_STORE = "PurposeMesh Unified Data Store";
 const TENANTS = ["ACME", "GLOBEX", "NOVA", "HELIOS", "ATLAS"];
 const REGIONS = ["NA", "EU", "APAC", "LATAM"];
 const DEPARTMENTS = ["sales", "finance", "ops", "support", "engineering"];
@@ -265,7 +266,7 @@ export class Warehouse {
           pipelineId: item.pipeline_id,
           pipelineName: item.pipeline_name,
           sourceSystem: item.source_system,
-          targetSystem: item.target_system,
+          targetSystem: publicTargetSystem(item.target_system),
           count: Number(item.count),
         }))
       : [];
@@ -340,7 +341,13 @@ function projectFact(
   allowedFields: readonly string[],
   denyFields: readonly string[],
 ): Partial<FactRow> {
-  return projectAttrs(row, { allowedFields, denyFields }) as Partial<FactRow>;
+  const projected = projectAttrs(row, { allowedFields, denyFields }) as Partial<FactRow>;
+  if (projected.target_system !== LEGACY_UNIFIED_DATA_STORE) return projected;
+  return { ...projected, target_system: UNIFIED_DATA_STORE };
+}
+
+function publicTargetSystem(targetSystem: string): string {
+  return targetSystem === LEGACY_UNIFIED_DATA_STORE ? UNIFIED_DATA_STORE : targetSystem;
 }
 
 function mulberry32(seed: number): () => number {

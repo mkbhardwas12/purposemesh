@@ -1,6 +1,6 @@
 ## What changed
 
-<!-- Describe the smallest complete change. -->
+<!-- Describe the smallest complete PurposeMesh change. -->
 
 ## Why
 

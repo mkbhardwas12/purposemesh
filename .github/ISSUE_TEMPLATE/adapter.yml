@@ -1,5 +1,5 @@
 name: Adapter or policy proposal
-description: Propose a target adapter, policy capability, or conformance scenario.
+description: Propose a PurposeMesh target adapter, policy capability, or conformance scenario.
 title: "[Proposal]: "
 labels: [proposal]
 body:
