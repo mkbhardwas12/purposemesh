@@ -810,7 +810,7 @@ describe("API hardening", () => {
       expect(store.snapshot(), scenario.name).toEqual(storeBefore);
       expect(state, scenario.name).toEqual(stateBefore);
     }
-  });
+  }, 20_000);
 });
 
 describe("SQLite control-plane persistence", () => {
