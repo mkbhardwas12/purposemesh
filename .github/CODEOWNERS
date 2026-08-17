@@ -1,0 +1,8 @@
+# Security-sensitive changes require an explicit owner review.
+* @mkbhardwas12
+
+/packages/cca-core/ @mkbhardwas12
+/apps/api/ @mkbhardwas12
+/.github/ @mkbhardwas12
+/docs/SECURITY.md @mkbhardwas12
+/docs/ARCHITECTURE.md @mkbhardwas12

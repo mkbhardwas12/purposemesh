@@ -1,0 +1,52 @@
+name: Bug report
+description: Report a reproducible problem using synthetic data.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include credentials or real data. Security vulnerabilities belong in a private advisory."
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed behavior
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Provide the smallest steps, role, purpose, and synthetic resource needed to reproduce it.
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Affected boundary
+      options:
+        - Web console
+        - API / PEP
+        - PDP / policy core
+        - Governance lifecycle
+        - Compiler preview
+        - Persistence / recovery
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Commit, OS, Node/npm versions, and CCA mode.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I used synthetic data and removed credentials and private paths.
+          required: true
+        - label: This is not a vulnerability requiring private disclosure.
+          required: true

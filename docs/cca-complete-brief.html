@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CCA Complete Brief — Contract Capsule Authorization</title>
+  <meta name="description" content="Contract Capsule Authorization: a purpose-bound RBAC, ABAC, and ReBAC reference control plane for exact row, field, purpose, and lifecycle boundaries.">
+  <meta name="theme-color" content="#102f2b">
+  <link rel="canonical" href="https://mkbhardwas12.github.io/contract-capsule-authorization/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CCA — Exact data boundaries from one authorization contract">
+  <meta property="og:description" content="A tested reference control plane for row-, field-, purpose-, classification-, and lifecycle-aware authorization.">
+  <meta property="og:url" content="https://mkbhardwas12.github.io/contract-capsule-authorization/">
+  <meta property="og:image" content="https://mkbhardwas12.github.io/contract-capsule-authorization/assets/cca-social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CCA — Contract Capsule Authorization">
+  <meta name="twitter:description" content="One authorization contract for exact data boundaries.">
+  <meta name="twitter:image" content="https://mkbhardwas12.github.io/contract-capsule-authorization/assets/cca-social-preview.png">
+  <style>
+    :root {
+      --ink: #161410;
+      --muted: #5c564c;
+      --rule: #c9bfb0;
+      --paper: #f6f1e8;
+      --panel: #efe8db;
+      --card: #fffdf8;
+      --accent: #8c3d24;
+      --accent-ink: #6e2f1c;
+      --allow: #1d4f43;
+      --deny: #8c3d24;
+      --teal-deep: #102f2b;
+      --teal-soft: #dceae4;
+      --amber-soft: #f3e0d4;
+      --shadow: 0 14px 34px rgba(22, 20, 16, 0.08);
+      --toc-w: 15.5rem;
+      --max: 46rem;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.55 "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    a { color: var(--accent-ink); }
+    a:hover { color: var(--accent); }
+    code, .mono {
+      font-family: "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
+      font-size: 0.86em;
+    }
+    code {
+      background: var(--panel);
+      padding: 0.08em 0.35em;
+      border: 1px solid var(--rule);
+      border-radius: 0.28rem;
+    }
+
+    .skip {
+      position: absolute;
+      left: -999px;
+      top: 0;
+    }
+    .skip:focus {
+      left: 1rem;
+      top: 1rem;
+      background: var(--card);
+      padding: 0.4rem 0.7rem;
+      z-index: 20;
+    }
+
+    .masthead {
+      border-bottom: 3px solid var(--ink);
+      padding: 1.4rem 1.6rem 1.2rem;
+      background:
+        radial-gradient(circle at 92% 18%, rgba(29, 79, 67, 0.16), transparent 24rem),
+        radial-gradient(circle at 72% 88%, rgba(140, 61, 36, 0.12), transparent 20rem),
+        var(--card);
+    }
+    .masthead-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .masthead h1 {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.8rem, 3.4vw, 2.55rem);
+      line-height: 1.15;
+      margin: 0.55rem 0 0.4rem;
+      max-width: 22ch;
+    }
+    .masthead .deck {
+      margin: 0;
+      max-width: 46rem;
+      color: var(--muted);
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .chip {
+      border: 1px solid var(--ink);
+      padding: 0.18rem 0.55rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--paper);
+      border-radius: 999px;
+    }
+    .chip.demo { background: #f3e0d4; border-color: var(--accent); color: var(--accent-ink); }
+    .chip.ok { background: #dceae4; border-color: var(--allow); color: var(--allow); }
+
+    .demo-access {
+      display: grid;
+      grid-template-columns: minmax(12rem, 1.2fr) repeat(3, minmax(7rem, 0.7fr)) minmax(8rem, 0.8fr);
+      gap: 0.65rem;
+      align-items: stretch;
+      margin-top: 1rem;
+      padding: 0.7rem;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow);
+    }
+    .demo-access__intro,
+    .demo-access__item,
+    .demo-access__actions { padding: 0.55rem 0.65rem; }
+    .demo-access__intro strong,
+    .demo-access__item strong {
+      display: block;
+      margin-bottom: 0.18rem;
+      color: #e8b78f;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .demo-access__intro span,
+    .demo-access__item code { color: #fffdf8; }
+    .demo-access__item code {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      font-size: 0.82rem;
+    }
+    .demo-access__actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .demo-access__actions a {
+      display: block;
+      border: 1px solid #e8b78f;
+      padding: 0.35rem 0.55rem;
+      color: #fffdf8;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.75rem;
+      border-radius: 0.38rem;
+    }
+    .demo-access__actions a:hover,
+    .demo-access__actions a:focus { background: var(--accent); color: #fff; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--toc-w) minmax(0, 1fr);
+      min-height: calc(100vh - 8rem);
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      overflow: auto;
+      border-right: 1px solid var(--rule);
+      background: var(--panel);
+      padding: 1.1rem 0.9rem 2rem;
+      box-shadow: 8px 0 24px rgba(22, 20, 16, 0.04);
+    }
+    nav.toc h2 {
+      margin: 0 0 0.7rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    nav.toc ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    nav.toc a {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      padding: 0.32rem 0.4rem;
+      border-left: 2px solid transparent;
+      font-size: 0.82rem;
+      line-height: 1.3;
+      border-radius: 0 0.4rem 0.4rem 0;
+    }
+    nav.toc a:hover,
+    nav.toc a:focus {
+      border-left-color: var(--accent);
+      background: var(--card);
+    }
+
+    main {
+      padding: 1.6rem 2rem 4rem;
+      max-width: calc(var(--max) + 4rem);
+    }
+    section {
+      margin: 0 0 2.4rem;
+      padding-top: 0.4rem;
+    }
+    section > h2 {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--ink);
+    }
+    h3 {
+      font-size: 1.02rem;
+      margin: 1.3rem 0 0.45rem;
+      letter-spacing: 0.01em;
+    }
+    p, li { color: var(--ink); }
+    .lead { font-size: 1.05rem; }
+    .note {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 0.7rem 0.9rem;
+      margin: 1rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .note strong { color: var(--accent-ink); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: var(--card);
+      margin: 0.7rem 0 1.1rem;
+      box-shadow: 0 7px 18px rgba(22, 20, 16, 0.04);
+    }
+    th, td {
+      border: 1px solid var(--rule);
+      padding: 0.45rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--panel);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    tr.deny td:first-child { color: var(--deny); font-weight: 600; }
+    tr.allow td:first-child { color: var(--allow); font-weight: 600; }
+
+    .eq {
+      background: var(--ink);
+      color: #f6f1e8;
+      padding: 1rem 1.1rem;
+      margin: 0.8rem 0 1rem;
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+    .eq span { color: #e0b089; }
+
+    .checks { margin: 0.4rem 0 1rem; padding-left: 1.15rem; }
+    .checks li { margin: 0.28rem 0; }
+
+    figure {
+      margin: 1rem 0 1.3rem;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      padding: 0.7rem 0.7rem 0.5rem;
+      border-radius: 0.65rem;
+      box-shadow: var(--shadow);
+    }
+    figure svg { display: block; width: 100%; height: auto; }
+    figcaption {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.45rem;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      padding: 0.75rem 0.85rem;
+      border-radius: 0.65rem;
+      box-shadow: 0 8px 20px rgba(22, 20, 16, 0.05);
+    }
+    .card h3 { margin-top: 0; }
+    .card ul { margin: 0.3rem 0 0; padding-left: 1.1rem; }
+
+    .problem-statement {
+      margin: 0.9rem 0 1rem;
+      border: 1px solid var(--rule);
+      border-left: 5px solid var(--accent);
+      border-radius: 0 0.65rem 0.65rem 0;
+      padding: 0.9rem 1rem;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .problem-statement strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--accent-ink);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .problem-statement p { margin: 0; }
+
+    .use-case-grid,
+    .questionnaire-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 0.8rem 0 1.15rem;
+    }
+    .use-case-card,
+    .questionnaire {
+      border: 1px solid var(--rule);
+      border-radius: 0.65rem;
+      padding: 0.8rem 0.9rem;
+      background: var(--card);
+      box-shadow: 0 8px 20px rgba(22, 20, 16, 0.05);
+    }
+    .use-case-card { border-top: 4px solid var(--allow); }
+    .use-case-card:nth-child(2n) { border-top-color: #356c78; }
+    .use-case-card h3,
+    .questionnaire h3 { margin: 0 0 0.35rem; }
+    .use-case-card p { margin: 0; color: var(--muted); font-size: 0.84rem; }
+    .use-case-card .use-case-id,
+    .questionnaire .audience {
+      display: block;
+      margin-bottom: 0.28rem;
+      color: var(--accent-ink);
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+    .questionnaire ol { margin: 0.45rem 0 0; padding-left: 1.25rem; }
+    .questionnaire li { margin: 0.35rem 0; font-size: 0.83rem; }
+    .questionnaire.wide { grid-column: 1 / -1; }
+    .intake-guide {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      margin: 0.8rem 0 1rem;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+    }
+    .intake-guide > div { padding: 0.7rem; background: var(--card); }
+    .intake-guide strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--accent-ink);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .intake-guide span { display: block; color: var(--muted); font-size: 0.78rem; }
+
+    .architecture-lens {
+      border-top: 3px solid var(--allow);
+    }
+    .architecture-lens.target { border-top-color: var(--accent); }
+    .architecture-lens .eyebrow {
+      margin: 0 0 0.35rem;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+    .truth-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin: 1rem 0;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+    }
+    .truth-strip > div {
+      min-height: 7rem;
+      padding: 0.75rem;
+      background: var(--card);
+    }
+    .truth-strip strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--accent-ink);
+      font-size: 0.76rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin: 0.9rem 0 1.2rem;
+    }
+    .role-card {
+      min-height: 9rem;
+      padding: 0.8rem;
+      border: 1px solid var(--rule);
+      border-top: 4px solid var(--allow);
+      border-radius: 0.65rem;
+      background: var(--card);
+      box-shadow: 0 8px 20px rgba(22, 20, 16, 0.05);
+    }
+    .role-card:nth-child(2) { border-top-color: #356c78; }
+    .role-card:nth-child(3) { border-top-color: #a36a28; }
+    .role-card:nth-child(4) { border-top-color: var(--accent); }
+    .role-card:nth-child(5) { border-top-color: var(--teal-deep); }
+    .role-card h3 { margin: 0 0 0.35rem; }
+    .role-card p { margin: 0; font-size: 0.82rem; color: var(--muted); }
+
+    .flow-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0.35rem;
+      margin: 0.8rem 0 1.1rem;
+    }
+    .flow-line span {
+      display: flex;
+      align-items: center;
+      flex: 1 1 8rem;
+      min-height: 3.6rem;
+      padding: 0.6rem 0.7rem;
+      border: 1px solid var(--rule);
+      border-radius: 0.5rem;
+      background: var(--card);
+      font-size: 0.82rem;
+    }
+    .flow-line b { color: var(--accent-ink); }
+
+    .status-key {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .status-key.current { color: var(--allow); background: var(--teal-soft); }
+    .status-key.preview { color: var(--accent-ink); background: var(--amber-soft); }
+    .status-key.target { color: var(--muted); background: var(--panel); }
+
+    .matrix-scroll { overflow-x: auto; margin: 0.7rem 0 1.1rem; }
+    .matrix-scroll table { min-width: 44rem; margin: 0; }
+
+    .source-list {
+      columns: 2;
+      column-gap: 2rem;
+      font-size: 0.82rem;
+    }
+    .source-list li { break-inside: avoid; margin-bottom: 0.4rem; }
+
+    footer.doc-foot {
+      border-top: 3px solid var(--ink);
+      padding: 1.1rem 1.6rem 1.6rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: var(--card);
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.toc {
+        position: sticky;
+        top: 0;
+        height: auto;
+        max-height: 42vh;
+        z-index: 5;
+      }
+      main { padding: 1.1rem 1rem 3rem; }
+      .two { grid-template-columns: 1fr; }
+      .demo-access { grid-template-columns: 1fr 1fr; }
+      .demo-access__intro,
+      .demo-access__actions { grid-column: 1 / -1; }
+      .truth-strip { grid-template-columns: 1fr; }
+      .role-grid { grid-template-columns: 1fr 1fr; }
+      .use-case-grid,
+      .questionnaire-grid { grid-template-columns: 1fr; }
+      .questionnaire.wide { grid-column: auto; }
+      .intake-guide { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .demo-access { grid-template-columns: 1fr; }
+      .demo-access__intro,
+      .demo-access__actions { grid-column: auto; }
+      .role-grid { grid-template-columns: 1fr; }
+      .source-list { columns: 1; }
+      .intake-guide { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      :root { --paper: #fff; --card: #fff; --panel: #f4f4f4; }
+      body { background: #fff; font-size: 11pt; }
+      .skip, .status-row { }
+      nav.toc {
+        position: static;
+        height: auto;
+        max-height: none;
+        border: 1px solid #bbb;
+        page-break-after: always;
+      }
+      .layout { display: block; }
+      .masthead, footer.doc-foot { break-inside: avoid; }
+      section { break-inside: auto; page-break-inside: auto; }
+      section > h2, h3 { break-after: avoid-page; page-break-after: avoid; }
+      table, figure, .eq, .note, .card, .problem-statement, .use-case-card, .questionnaire, .intake-guide { break-inside: avoid; }
+      a { color: inherit; text-decoration: none; }
+      main { max-width: none; padding: 0; }
+      .masthead { border-bottom-width: 2pt; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+
+  <header class="masthead">
+    <div class="masthead-meta">
+      <span>Project CCA</span>
+      <span>16 August 2026</span>
+    </div>
+    <h1>Contract Capsule Authorization</h1>
+    <p class="deck">Complete executive and developer brief for shared S/4, BW, pipeline, search, warehouse, and BI data: the verified local implementation, the application-agnostic target, and the work still required before production.</p>
+    <div class="status-row">
+      <span class="chip ok">Demo walkthrough ready</span>
+      <span class="chip demo">Not a production control plane</span>
+      <span class="chip">Compiler = JSON preview</span>
+      <span class="chip">No live IdP, catalog, or target adapters</span>
+    </div>
+    <aside class="demo-access" aria-label="Local demo access">
+      <div class="demo-access__intro">
+        <strong>Local demo access</strong>
+        <span>Sign in first; no data appears until Access → Data → Run authorized view. Password login is disabled in production.</span>
+      </div>
+      <div class="demo-access__item">
+        <strong>Platform admins</strong>
+        <code>hugo.admin · iris.admin</code>
+      </div>
+      <div class="demo-access__item">
+        <strong>Data owner</strong>
+        <code>dana.owner</code>
+      </div>
+      <div class="demo-access__item">
+        <strong>Password</strong>
+        <code>cca-demo</code>
+      </div>
+      <div class="demo-access__actions">
+        <a href="http://127.0.0.1:5173/" target="_blank" rel="noopener">Open local console</a>
+        <a href="#architecture">View architecture</a>
+        <a href="CCA-Modern-Complete-Briefing-Final.pptx">Download presentation</a>
+        <a href="https://github.com/mkbhardwas12/contract-capsule-authorization" target="_blank" rel="noopener">View source</a>
+      </div>
+    </aside>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#exec">1. Executive summary</a></li>
+        <li><a href="#problem">2. Problem statement</a></li>
+        <li><a href="#discovery">3. Use cases and questionnaires</a></li>
+        <li><a href="#classic">4. Few-role RBAC + ABAC + ReBAC</a></li>
+        <li><a href="#model">5. Contract Capsule + DataScope</a></li>
+        <li><a href="#architecture">6. Architecture</a></li>
+        <li><a href="#personas">7. Personas and capsules</a></li>
+        <li><a href="#decision">8. Decision equation</a></li>
+        <li><a href="#studio">9. Role Studio</a></li>
+        <li><a href="#data">10. Dataset, catalog, lineage</a></li>
+        <li><a href="#auth">11. AuthN, JIT, lifecycle</a></li>
+        <li><a href="#bi">12. Threats and platform PEPs</a></li>
+        <li><a href="#compiler">13. AuthZEN, compiler, fidelity</a></li>
+        <li><a href="#run">14. Demo and verification</a></li>
+        <li><a href="#ready">15. Current vs target</a></li>
+        <li><a href="#next">16. Roadmap and references</a></li>
+      </ol>
+    </nav>
+
+    <main id="content">
+      <section id="exec">
+        <h2>1. Executive summary</h2>
+        <p class="lead">The requirement fits CCA, but the secure answer is not “RBAC everywhere.” It is a small functional-role model combined with business DataScope, resource relationships, purpose, classification, time, and target-native enforcement.</p>
+        <p><strong>Business outcome:</strong> SAP, BW, Elasticsearch, ADF, application, and BI pipelines can land in one governed store while each team receives a different server-enforced row and field view. Five capability personas stay stable: Viewer, Operator, Data Steward, Security Auditor, and Platform Admin. A Contract Capsule says exactly which resource, rows, fields, actions, purpose, conditions, and obligations are allowed. Removing a team disables that relationship once and starts verified removal at every enforcement point.</p>
+        <p><strong>Product outcome:</strong> CCA becomes an authorization delivery and assurance plane. It evaluates new applications through a PDP and compiles legacy/data-platform policy through certified adapters. A fidelity firewall refuses any translation that would weaken row, field, masking, purpose, JIT, or audit semantics.</p>
+        <p class="note"><strong>Truth as of this build:</strong> standing row and field policy works in the local core and SQLite warehouse. The console, API, minimal AuthZEN evaluation adapter, local persistence, policy explanation, lifecycle workflow, reusable content-addressed role objects, and staged workload contracts are real. Native-shaped compiler artifacts are previews; seeded fidelity gates block execution and keep apply/revoke/read-back arrays empty. External SAP, BW, Elasticsearch, ADF, warehouse-native, and BI changes are not. There is no enterprise OIDC/SCIM, catalog/lineage crawler, connector worker, target read-back, drift reconciliation, or multi-replica control store yet.</p>
+      </section>
+
+      <section id="problem">
+        <h2>2. Problem statement</h2>
+        <p class="lead">Enterprises move sensitive data through SAP S/4HANA, SAP BW, ADF, search, application APIs, warehouses, and BI tools. Several pipelines can feed one physical store, but every human and workload identity is entitled to a different combination of records, fields, actions, purpose, and duration.</p>
+        <div class="problem-statement">
+          <strong>Formal problem statement</strong>
+          <p>Coarse application roles cannot safely express data-level boundaries, while encoding every vendor, team, region, dataset, field, and application into role names creates role explosion. The organization needs one reusable authorization model that keeps a small set of capability roles, binds access to governed data contracts and relationships, separates human and workload identities, supports immediate lifecycle change, and refuses enforcement when a target cannot preserve the required controls.</p>
+        </div>
+        <p>The authorization plane must also know what data exists, who owns it, how it is classified, where it flows, and which access paths can bypass policy. CCA can make decisions only from registered and trusted metadata; production discovery connectors and steward approval are therefore part of the control, not optional inventory work.</p>
+        <p>Consider one unified operational store fed through several independent paths:</p>
+        <div class="flow-line" aria-label="Multiple pipelines feeding one governed store">
+          <span><b>Enterprise sources</b><br>S/4HANA, BW, CRM, WMS, ITSM, BOBJ</span>
+          <span><b>Independent pipelines</b><br>BW chains, Elasticsearch, ADF, and BOBJ connectors</span>
+          <span><b>Tested end to end</b><br>100,000 deterministic synthetic, lineage-tagged records</span>
+          <span><b>Role-filtered access</b><br>Data Owner baseline plus scoped consumer views</span>
+        </div>
+        <ul>
+          <li><strong>Vendor Operations</strong> sees assigned purchasing organizations and plants, with vendor identifiers masked.</li>
+          <li><strong>L1 support</strong> sees health, counts, timestamps, and sanitized errors—not vendor PII or raw payload.</li>
+          <li><strong>L2 BW</strong> can monitor or retry selected chains without receiving unrelated vendor rows.</li>
+          <li><strong>Platform Operations</strong> sees cross-team technical telemetry but no business payload.</li>
+          <li><strong>Finance Audit</strong> receives clear vendor identifiers only for an approved case and bounded time.</li>
+          <li><strong>Unified Data Owner</strong> can inspect the complete synthetic source only through an explicit data-governance contract; this is the controlled baseline for comparison.</li>
+          <li><strong>Platform Admin</strong> maintains connectors and policy but reads no business data by default.</li>
+        </ul>
+        <p class="note"><strong>Interaction boundary:</strong> the sign-in surface contains identities and authentication controls only. It never displays source rows, record counts, schema, or pipeline contents. After authentication, a user deliberately opens <strong>Access → Data</strong> and runs an authorized query. The API filters rows and projects fields before the browser receives them.</p>
+        <p>The local seed demonstrates a smaller version: Emma and Finn share the Business consumer persona but different capsule attributes keep ACME and GLOBEX rows disjoint. Offboarding ACME removes Emma’s local desired-state path while Finn remains. That does <em>not</em> yet prove removal in an external BW role, Elasticsearch cluster, ADF factory, or BI workspace.</p>
+        <div class="truth-strip" aria-label="Required outcomes">
+          <div><strong>Business outcome</strong>Reuse one governed data platform across teams without duplicating pipelines, dashboards, or tenant-specific roles.</div>
+          <div><strong>Security outcome</strong>Deny by default; keep administration separate from data; prove row, field, purpose, action, time, and workload boundaries.</div>
+          <div><strong>Delivery outcome</strong>Onboard and offboard through one relationship change, then compile, apply, read back, and reconcile every enforcement point.</div>
+        </div>
+      </section>
+
+      <section id="discovery">
+        <h2>3. Use cases and discovery questionnaires</h2>
+        <p class="lead">Use the following scenarios to validate product fit and the questionnaires to turn an application, dataset, or pipeline into an evidence-backed authorization design. Answers should name authoritative systems and owners; “unknown” becomes a fail-closed gap, not an assumed permission.</p>
+
+        <h3>Use-case framing</h3>
+        <div class="intake-guide" aria-label="Four-part use-case intake">
+          <div><strong>Who</strong><span>Human or workload identity, capability role, assurance, employment or service status.</span></div>
+          <div><strong>What</strong><span>Dataset, application, action, classification, row domain, and releasable fields.</span></div>
+          <div><strong>Why and when</strong><span>Business purpose, approval, ticket, time window, session, network, and risk context.</span></div>
+          <div><strong>Where enforced</strong><span>API, query, SAP/BW object, search role, warehouse RLS, BI model, export, or operation boundary.</span></div>
+        </div>
+
+        <h3 id="primary-use-case">Primary use case: one multi-pipeline store, many least-privilege views</h3>
+        <p>S/4 vendor and purchasing data, BW process-chain events, Elasticsearch telemetry, ADF-loaded customer, transaction, and inventory data, ITSM tickets, and BOBJ operations land in one synthetic unified store containing 100,000 records by default. ACME, GLOBEX, support, application, data, and platform teams use the same physical target. The policy must isolate their rows and fields while preserving source, pipeline, and classification lineage.</p>
+        <table>
+          <thead><tr><th>Actor</th><th>Required access</th><th>Must remain prohibited</th></tr></thead>
+          <tbody>
+            <tr><td>Unified Data Owner</td><td>The full approved synthetic source through an explicit <code>data-governance</code> contract, including Restricted rows and the complete registered field allowlist.</td><td>Policy administration by implication, production data outside the registered resource, or an unauthenticated “raw” bypass.</td></tr>
+            <tr><td>ACME consumer</td><td>ACME vendor rows for the approved analytics purpose; approved business fields only.</td><td>GLOBEX rows, bank account, tax identifiers, pipeline administration, and unrelated exports.</td></tr>
+            <tr><td>GLOBEX consumer</td><td>GLOBEX vendor rows under the same shared physical source.</td><td>ACME rows and all protected fields not explicitly released by contract.</td></tr>
+            <tr><td>L1 Support</td><td>Chain health, counts, timestamps, and sanitized status.</td><td>Vendor master details, confidential dumps, raw payload, retry, or administrative actions.</td></tr>
+            <tr><td>L2 BW / BOBJ</td><td>Approved monitor, diagnose, retry, or report-repair actions for assigned products.</td><td>Unrelated vendor data, unrestricted export, policy administration, and cross-team access.</td></tr>
+            <tr><td>Platform Operations</td><td>Cross-team sanitized technical telemetry and connector health.</td><td>Business payload and an implied right to query business datasets.</td></tr>
+            <tr><td>Platform Admin</td><td>Manage policy, connectors, releases, and evidence.</td><td>Business-data read unless a separate, approved, time-bounded contract authorizes it.</td></tr>
+            <tr><td>Pipeline workloads</td><td>One stage-specific read or write contract per S/4 extract, BW activation, and telemetry publication identity.</td><td>One shared service account with end-to-end source, target, secret, and payload access.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="supporting-use-cases">Supporting use cases</h3>
+        <div class="use-case-grid">
+          <article class="use-case-card"><span class="use-case-id">UC-01 · Controlled baseline</span><h3>Data Owner source view</h3><p>Use an explicit high-clearance data contract—not Platform Admin or an unauthenticated fixture—to inspect the complete synthetic source and establish the comparison baseline.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-02 · Tenant isolation</span><h3>Shared target, disjoint data</h3><p>Keep ACME, GLOBEX, and future tenants on one governed target while proving that each receives only its contract-bound rows and fields.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-03 · Tiered operations</span><h3>L1, L2 BW, and L2 BOBJ</h3><p>Separate health visibility, technical diagnosis, retry, and report repair without turning support levels into broad business-data roles.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-04 · Workload isolation</span><h3>One identity per pipeline stage</h3><p>Bind BW extraction, activation, ADF, BOBJ, and sanitized Elasticsearch telemetry publication to different identities, resources, actions, secrets, and purposes.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-05 · Explicit query</span><h3>No data on sign-in</h3><p>Authenticate first, open Access → Data, then run the authorized view deliberately. Every account switch clears the prior result before another query can run.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-06 · Temporary elevation</span><h3>JIT diagnostics</h3><p>Freeze dataset, row, field, action, purpose, approval, assurance, and expiry into a revocable grant that never becomes standing access.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-07 · Lifecycle</span><h3>Onboard and offboard once</h3><p>Add or remove a capsule membership centrally, revoke active elevation, compile target changes, read them back, and retain evidence.</p></article>
+          <article class="use-case-card"><span class="use-case-id">UC-08 · Application portability</span><h3>One decision contract</h3><p>Integrate an API, dashboard, database, or enterprise platform through the same subject-action-resource-context request and typed obligations.</p></article>
+        </div>
+
+        <h3 id="stakeholder-questionnaires">Stakeholder questionnaires</h3>
+        <p>Run these as separate interviews. Record the respondent, source system, evidence link, owner, confidence, and follow-up date for every answer.</p>
+        <div class="questionnaire-grid">
+          <article class="questionnaire">
+            <span class="audience">Executive and product sponsor</span>
+            <h3 id="questions-executive">Outcome and risk questionnaire</h3>
+            <ol>
+              <li>Which business risk, audit finding, or delivery delay must this program reduce?</li>
+              <li>Which teams, vendors, regions, and legal entities must be isolated?</li>
+              <li>Which applications and data products are in the first release, and which are explicitly out of scope?</li>
+              <li>Is sharing one governed platform preferable to creating physical copies, and what exceptions are permitted?</li>
+              <li>Who may accept residual authorization or connector-fidelity risk?</li>
+              <li>How quickly must onboarding, emergency elevation, revocation, and offboarding take effect?</li>
+              <li>Which regulations, contracts, or internal policies define the evidence and retention requirement?</li>
+              <li>What measurable outcome defines success: fewer roles, faster fulfillment, fewer incidents, lower audit effort, or all four?</li>
+              <li>Who is the accountable Data Owner for the unified store, and does “complete view” mean standing, time-bounded, or case-bound access?</li>
+            </ol>
+          </article>
+          <article class="questionnaire">
+            <span class="audience">Data owner, steward, privacy, and security</span>
+            <h3 id="questions-data-security">Data boundary questionnaire</h3>
+            <ol>
+              <li>What datasets exist, where do they originate, and who is accountable for each one?</li>
+              <li>Which attributes identify tenant, vendor, company code, purchasing organization, plant, region, or department?</li>
+              <li>What is the approved classification and field-level sensitivity, and who attested it?</li>
+              <li>Which rows and fields may each persona receive for each business purpose?</li>
+              <li>Which actions are standing, approval-gated, export-restricted, or prohibited?</li>
+              <li>Can data from different tenants or purposes ever be combined? If so, under whose approval?</li>
+              <li>What authentication assurance, device, network, ticket, or session conditions are required?</li>
+              <li>What is the maximum JIT duration, who independently approves it, and who may revoke it?</li>
+              <li>What must happen when ownership, classification, lineage, or purpose is missing or disputed?</li>
+              <li>How often are contracts, classifications, memberships, and exceptions reviewed?</li>
+              <li>Which exact fields form the public allowlist, and which tenant, product, pipeline, source, and classification dimensions must constrain every role?</li>
+            </ol>
+          </article>
+          <article class="questionnaire">
+            <span class="audience">Application owner and developer</span>
+            <h3 id="questions-application">PEP integration questionnaire</h3>
+            <ol>
+              <li>Where are authentication and authorization performed today, and which identity claims are authoritative?</li>
+              <li>What subject, action, resource, and trusted context can the application send to the decision service?</li>
+              <li>At which API, query, export, batch, dashboard, and operation boundaries must policy be enforced?</li>
+              <li>Can the application enforce row filters, field projection, masking, purpose, action, and maximum-result obligations?</li>
+              <li>How are background jobs, integrations, and service identities authenticated and authorized?</li>
+              <li>What is the fail-closed behavior when the PDP is unavailable, an obligation is unknown, or policy is stale?</li>
+              <li>Is decision caching allowed, for how long, and how are membership or policy changes invalidated?</li>
+              <li>What latency, availability, concurrency, and regional requirements apply?</li>
+              <li>How will negative authorization, bypass, export, and regression tests run in CI and release gates?</li>
+              <li>Does sign-in fetch any records, counts, schema, or pipeline metadata? If yes, which explicit authorization permits that disclosure?</li>
+              <li>When accounts switch or policy changes, how are in-flight requests aborted and prior rows, counts, fields, and caches cleared?</li>
+            </ol>
+          </article>
+          <article class="questionnaire">
+            <span class="audience">Platform, connector, SAP/BW, data engineering</span>
+            <h3 id="questions-platform">Enforcement and pipeline questionnaire</h3>
+            <ol>
+              <li>Which target systems and deployed editions must receive native policy?</li>
+              <li>Can each target preserve row, field, purpose, action, time, and workload-identity semantics exactly?</li>
+              <li>How are target policies planned, approved, installed, rolled back, and versioned?</li>
+              <li>Can installed policy, assignments, and hashes be read back and compared with desired state?</li>
+              <li>Which identity runs each source, staging, transformation, target, and telemetry stage?</li>
+              <li>What may each workload read, write, operate, rotate, or log—and which secrets can it obtain?</li>
+              <li>Can one account currently span several stages or bypass a governed path?</li>
+              <li>Do logs contain payload, identifiers, secrets, or restricted error dumps, and how are they sanitized?</li>
+              <li>Who owns connector outages, drift, failed revocation, and emergency rollback?</li>
+              <li>Can the unified store retain authoritative source, pipeline, target, and classification lineage for at least 100,000 deterministic test records?</li>
+            </ol>
+          </article>
+          <article class="questionnaire wide">
+            <span class="audience">Operations, audit, compliance, and rollout owners</span>
+            <h3 id="questions-operations">Lifecycle and assurance questionnaire</h3>
+            <ol>
+              <li>What event starts onboarding, transfer, leave, suspension, service retirement, or team offboarding?</li>
+              <li>Which system is authoritative for human status, workload status, ownership, and group membership?</li>
+              <li>How quickly must sessions, JIT grants, memberships, target assignments, tokens, and secrets be revoked?</li>
+              <li>What evidence must connect request, approval, decision, policy version, target receipt, read-back, and reconciliation?</li>
+              <li>What drift threshold is tolerated, who is alerted, and when must the affected path fail closed?</li>
+              <li>What audit-retention, privacy, immutability, search, and legal-hold requirements apply?</li>
+              <li>What availability, recovery-time, recovery-point, backup, and regional-failover objectives apply?</li>
+              <li>Which pilot proves the model end to end, and what explicit exit criteria authorize expansion?</li>
+              <li>Who owns the operating model after launch: policy, identity, data, connectors, incidents, evidence, and periodic review?</li>
+              <li>Which exact positive, negative, concurrency, performance, schema-drift, and account-switch tests must pass for every seeded identity?</li>
+            </ol>
+          </article>
+        </div>
+
+        <h3 id="acceptance-criteria">Decision-ready exit criteria</h3>
+        <ul class="checks">
+          <li>The login surface returns no data rows, counts, schema, source, pipeline, or classification metadata; data is requested only after authentication in <strong>Access → Data</strong>.</li>
+          <li>The default deterministic synthetic unified store contains at least 100,000 lineage-tagged records from multiple modeled source and pipeline families.</li>
+          <li>Only an explicitly contracted Unified Data Owner receives the complete approved source; Platform Admin remains a zero-business-data role.</li>
+          <li>Every protected operation requires an authenticated human or workload identity.</li>
+          <li>A missing identity, purpose, scope, contract, classification, or enforcement capability denies access.</li>
+          <li>Cross-tenant isolation is demonstrated with negative tests on the shared physical source.</li>
+          <li>Every seeded role is tested at the network boundary: unauthorized rows and fields are absent from the response, not merely hidden in the interface.</li>
+          <li>Account switching aborts in-flight work, clears previous rows and authorization metadata, establishes a new session, and requires a new explicit query.</li>
+          <li>Platform administration provides no implicit business-data read.</li>
+          <li>JIT access is independently approved, scope-frozen, time-bounded, auditable, and immediately revocable.</li>
+          <li>Offboarding closes the central relationship, active elevation, target assignment, session, and secret paths.</li>
+          <li>Every decision identifies the contributing contract, capsule, obligations, and policy version.</li>
+          <li>Every target adapter proves semantic fidelity before apply and supports read-back, rollback, and drift response.</li>
+          <li>Unknown datasets, owners, classifications, obligations, or bypass paths remain blocked until governed.</li>
+          <li>Pagination, filtering, sorting, aggregates, charts, search, and export use the same server-side row and field policy; no operation materializes the complete store in the browser.</li>
+          <li>The pilot passes functional, negative, failure, recovery, ≥100,000-row scale, concurrency, and independent security review.</li>
+        </ul>
+      </section>
+
+      <section id="classic">
+        <h2>4. Few-role RBAC + ABAC + ReBAC</h2>
+        <p>Classic RBAC fails when a role name encodes <em>job × tenant × vendor × company × region × application × fields</em>. Five stable capability personas avoid that multiplication:</p>
+        <div class="role-grid" aria-label="Five stable CCA capability personas">
+          <article class="role-card"><h3>Viewer</h3><p>Discover, read, and query. DataScope, purpose, classification, projection, and export policy still apply.</p></article>
+          <article class="role-card"><h3>Operator</h3><p>Monitor, run, retry, and cancel. Technical detail is separate from business payload.</p></article>
+          <article class="role-card"><h3>Data Steward</h3><p>Classifies, proposes, approves data policy, and attests. This is the governance function; no self-approval or implicit raw-data read.</p></article>
+          <article class="role-card"><h3>Security Auditor</h3><p>Reviews decisions, evidence, drift, and control operation. Read-only evidence access does not imply business-data access.</p></article>
+          <article class="role-card"><h3>Platform Admin</h3><p>Configures CCA and adapters. Receives no implicit business-data read.</p></article>
+        </div>
+        <table>
+          <thead><tr><th>Model</th><th>What it contributes</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>RBAC</td><td>Stable functional permission</td><td><code>Operator</code> may retry a chain</td></tr>
+            <tr><td>ABAC</td><td>Subject, resource, action, and environment values</td><td>Company <code>1000</code>, purchasing org <code>US01</code>, purpose <code>operations</code></td></tr>
+            <tr><td>ReBAC</td><td>Business relationship without a copied role</td><td><code>member-of(user, vendor-ops-us)</code>; <code>operates(team, pipeline)</code></td></tr>
+          </tbody>
+        </table>
+        <p><strong>Current implementation and remaining gap:</strong> the seeded personas illustrate scope separation. Role Studio now content-addresses and reuses an action/ceiling capability persona, purpose/scope capsule, and matching contract; the principal assignment lives on the membership relationship. Identical drafts no longer create per-person copies. The authoring vocabulary can still form more combinations than the intended five governed capability personas, so production policy must constrain it to approved Viewer, Operator, Data Steward, Security Auditor, and Platform Admin templates plus shared typed scopes.</p>
+      </section>
+
+      <section id="model">
+        <h2>5. Contract Capsule and DataScope</h2>
+        <p>A Contract Capsule is one atomic authorization envelope. Its row predicate and field release remain coupled; combining several grants must never create a wider row/column cross-product.</p>
+        <table>
+          <thead>
+            <tr><th>Object</th><th>Meaning</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Subject / persona</td>
+              <td>Human or workload identity, live status, functional verbs, classification ceiling, and authoritative attributes.</td>
+              <td><span class="status-key current">Local</span> persona and principal; <span class="status-key target">Target</span> IdP/SCIM provenance and assurance.</td>
+            </tr>
+            <tr>
+              <td>Capsule</td>
+              <td>Scoped membership, trusted purpose, attributes, optional hierarchy, and active lifecycle state.</td>
+              <td><span class="status-key current">Local</span></td>
+            </tr>
+            <tr>
+              <td>Contract</td>
+              <td>Dataset, purpose, personas, actions, classification maximum, row predicate, and field restriction.</td>
+              <td><span class="status-key current">Local</span></td>
+            </tr>
+            <tr>
+              <td>DataScope</td>
+              <td>Typed row domain: tenant, product, company code, purchasing organization, plant, region, department, source, and classification.</td>
+              <td><span class="status-key current">Partial</span> product/tenant/region/department/source locally; SAP dimensions are target.</td>
+            </tr>
+            <tr>
+              <td>Relationships</td>
+              <td>Member-of, owns, operates, derives-from, and approves links.</td>
+              <td><span class="status-key current">Partial</span> membership and capsule hierarchy; general graph is target.</td>
+            </tr>
+            <tr>
+              <td>Obligations</td>
+              <td>Allowlist, deny, mask, audit, no-export, maximum rows, justification, and expiry.</td>
+              <td><span class="status-key current">Partial</span> fields/audit/expiry; general masks and no-export are target.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Representative DataScope</h3>
+        <pre class="eq" aria-label="Representative DataScope">{
+  tenant: "enterprise-a",
+  products: ["process_chains", "bw_vendor"],
+  companyCodes: ["1000"],
+  purchasingOrganizations: ["US01", "US02"],
+  plants: ["TX01"],
+  classificationMax: "confidential"
+}</pre>
+        <p>“All view” is Viewer with an enterprise DataScope and appropriate class clearance, not Platform Admin. Restricted fields or export should be separate, justified, time-bounded actions.</p>
+      </section>
+
+      <section id="architecture">
+        <h2>6. Architecture: runtime today and production target</h2>
+        <p class="lead">CCA’s target canonical model is application-agnostic: identity facts, business scope, policy, enforcement, and evidence stay separate so one access intent can govern a warehouse, SAP, search, BI, or a future application without copying the human role model into every platform. The running build is a reference estate with local enforcement and one minimal application decision adapter—not universal target enforcement.</p>
+
+        <div class="two">
+          <article class="card architecture-lens">
+            <p class="eyebrow">Executive view · working now</p>
+            <h3>One decision model, enforced locally</h3>
+            <ul>
+              <li>The browser is untrusted; the API revalidates the live principal and calls the PDP.</li>
+              <li>Personas, capsules, contracts, bindings, JIT grants, and audit state are persisted in a single-node SQLite control snapshot.</li>
+              <li>The local warehouse path compiles authorized scope to parameterized SQL, filters rows, and projects fields before returning data.</li>
+              <li>A strict minimal <code>POST /access/v1/evaluation</code> adapter exposes the same PDP to a reference application and returns enforceable field/contract/capsule obligations.</li>
+              <li>Role Studio submits governed standing-access requests. A Data Owner and a Governance Admin must approve independently; the first approval is visible but does not grant access.</li>
+              <li>Three versioned warehouse SoD rules evaluate standing plus requested access, and manual human-membership recertification records exact assignment evidence.</li>
+              <li>Compiler output includes a policy hash/version, eligible assignments, local capability gates, and target-shaped previews. Missing purpose/row fidelity blocks seeded deployments, sets <code>previewOnly</code>, and leaves apply/revoke/read-back arrays empty.</li>
+              <li>The one-node control snapshot has verified online backup and transactional restore with integrity manifests and rollback bundles.</li>
+            </ul>
+          </article>
+          <article class="card architecture-lens target">
+            <p class="eyebrow">Developer view · production target</p>
+            <h3>Closed-loop enforcement at every edge</h3>
+            <ul>
+              <li>Enterprise OIDC plus authoritative HR/SCIM and managed/SPIFFE workload identity establish identity and lifecycle state.</li>
+              <li>Catalog connectors supply governed schema, classification, owner, lineage, existing access, and target capability.</li>
+              <li>AuthZEN-compatible application PEPs ask a highly available PDP; legacy/data platforms receive certified native policy.</li>
+              <li>A transactional shared store, outbox workers, read-back, drift reconciliation, rollback, offsite disaster recovery, and externally anchored append-only audit close the loop.</li>
+              <li>Catalog-derived owners, configurable SoD policy, scheduled human and workload recertification, notifications, and explicit overdue consequences replace the seeded governance fixtures.</li>
+            </ul>
+          </article>
+        </div>
+
+        <h3>How CCA knows the data—and who may access it</h3>
+        <div class="truth-strip" aria-label="Data knowledge and access decision flow">
+          <div>
+            <strong>1 · Known facts</strong>
+            The current principal and persona; active capsule memberships; capsule scope attributes; registered dataset classification and allowed field paths; bound contracts; active JIT grants; and current time.
+          </div>
+          <div>
+            <strong>2 · Deterministic decision</strong>
+            Match identity, action, dataset, trusted purpose, persona, live capsule, contract, classification ceiling, and row predicate. If any required fact is absent or contradictory, deny.
+          </div>
+          <div>
+            <strong>3 · Authorized release</strong>
+            Filter rows at the enforcement path, project only allowlisted fields, remove denied fields conservatively, return reason and policy identifiers, and append an audit event.
+          </div>
+        </div>
+        <h3>Access → Data runtime path</h3>
+        <div class="flow-line" aria-label="Authenticated unified data query path">
+          <span><b>1 · Authenticate</b><br>identity only; no data request or source preview</span>
+          <span><b>2 · Open Data</b><br>show signed-in identity, capsule, and permitted purpose controls</span>
+          <span><b>3 · Run view</b><br>principal comes from the verified token, never from a subject selector</span>
+          <span><b>4 · Enforce</b><br>parameterized row scope, class ceiling, allowlist, and deny obligations</span>
+          <span><b>5 · Release + prove</b><br>paged authorized rows, explanation, lineage, and receipt</span>
+        </div>
+        <div class="two">
+          <article class="card">
+            <p class="eyebrow">Data Owner baseline</p>
+            <h3>Complete view is a data permission</h3>
+            <p><code>dana.owner</code> reaches the complete approved synthetic dataset only because capsule <code>data-governance-owner</code> binds contract <code>wh.data-owner</code> for purpose <code>data-governance</code>, Restricted ceiling, every registered product/source, and the complete explicit field allowlist. That view uses the ordinary authenticated policy path; it is not a login-page fixture, support shortcut, or Platform Admin inheritance.</p>
+          </article>
+          <article class="card">
+            <p class="eyebrow">Every other identity</p>
+            <h3>The browser receives only the authorized projection</h3>
+            <p><code>GET /api/warehouse/records</code> derives the subject from the token, requires a trusted purpose, intersects live membership and contract scope, compiles parameterized SQL, applies classification and field rules, and returns a cursor page of 50 records by default and at most 100. The response carries authorized facets, lineage, allowed/denied fields, contract and capsule identifiers, plus a hash-chained receipt. A user cannot broaden access by changing a filter, route, purpose, cursor, limit, or client state.</p>
+          </article>
+        </div>
+        <p class="note"><strong>Capability boundary:</strong> the tool can decide access for data and identity metadata registered in CCA. The demo has one hard-coded <code>data-owner</code> reviewer in <code>data-governance-owner</code> and three fixed warehouse SoD rules; it does <em>not</em> crawl enterprise systems, discover schema or lineage, derive owners from a catalog, inspect target grants, infer entitlement from behavior, or synchronize HR/directory assignments. Production connectors may suggest classifications, but accountable owners approve them. Unknown or unclassified resources remain restricted; access is explicit policy, never an AI guess.</p>
+
+        <h3>Governed standing-access path</h3>
+        <div class="flow-line" aria-label="Two-role standing access approval path">
+          <span><b>1 · Draft</b><br>schema-bound intent and metadata-only impact preview</span>
+          <span><b>2 · Guard</b><br>validate target and evaluate standing + candidate SoD</span>
+          <span><b>3 · Request</b><br>freeze evidence; direct apply remains disabled</span>
+          <span><b>4 · Dual review</b><br>Data Owner + independent Governance Admin; partial means pending</span>
+          <span><b>5 · Apply + evidence</b><br>revalidate, reuse content-addressed policy objects, identify assignment, audit</span>
+        </div>
+        <p>The requester, target, and one person attempting both reviewer roles are rejected. The service proves that independent reviewers are available before accepting the request, rechecks reviewer authority and SoD before final application, and never treats the first approval or a UI-visible draft as access. Recertification later refers to the exact assignment id and captured membership fingerprint so review cannot drift onto a replacement membership.</p>
+
+        <h3>Production target flow</h3>
+        <div class="flow-line" aria-label="Production target authorization flow">
+          <span><b>Identity/PIP</b><br>HR, IdP, SCIM, team graph, workload identity</span>
+          <span><b>Resource knowledge</b><br>catalog, owner, schema, classification, lineage</span>
+          <span><b>PDP + compiler</b><br>subject, action, resource, context, DataScope</span>
+          <span><b>Fidelity firewall</b><br>native, gateway, isolated projection, or block</span>
+          <span><b>Evidence</b><br>read-back, drift, decision/use log, offboard proof</span>
+        </div>
+
+        <h3>Fidelity firewall</h3>
+        <p>Each adapter declares exactly what it can enforce. A policy is deployable only when every mandatory property has a safe implementation:</p>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Capability</th><th>Native</th><th>Alternative</th><th>Unsafe result</th></tr></thead>
+            <tbody>
+              <tr><td>Row predicate</td><td>Target RLS, BW characteristic values, ES DLS</td><td>Trusted query gateway or isolated projection</td><td>Block</td></tr>
+              <tr><td>Field release / mask</td><td>CLS/FLS/OLS/masking</td><td>Governed view/index</td><td>Block</td></tr>
+              <tr><td>Purpose / JIT</td><td>Online PEP or expiring target grant</td><td>Gateway with current PDP</td><td>Block</td></tr>
+              <tr><td>Revocation proof</td><td>Apply + target read-back</td><td>Quarantine target until verified</td><td>Do not mark active/revoked</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The current compiler records required, supported, and missing local capabilities. It may still show a native-shaped preview when a gate fails, but missing purpose/row or other required fidelity marks deployment <code>blocked</code>, sets <code>previewOnly</code>, and keeps all execution-plan arrays empty. Its model is hard-coded, not discovered from an installed platform version. Only a future connector-executed apply followed by matching target read-back is enforcement evidence.</p>
+
+        <h3>Current trust path</h3>
+
+        <figure>
+          <svg viewBox="0 0 860 320" role="img" aria-labelledby="arch-title arch-desc">
+            <title id="arch-title">CCA architecture path</title>
+            <desc id="arch-desc">Untrusted console to control API to CCA core to state store, with compiler JSON preview toward target PEPs that are not yet connected.</desc>
+            <rect x="1" y="1" width="858" height="318" fill="#fffdf8" stroke="#c9bfb0"/>
+            <rect x="24" y="36" width="150" height="70" fill="#efe8db" stroke="#161410"/>
+            <text x="99" y="66" text-anchor="middle" font-size="13" font-family="Georgia, serif">Web console</text>
+            <text x="99" y="86" text-anchor="middle" font-size="11" fill="#5c564c">Untrusted client</text>
+            <polygon points="174,71 204,71 204,66 224,76 204,86 204,81 174,81" fill="#8c3d24"/>
+            <rect x="236" y="36" width="168" height="70" fill="#efe8db" stroke="#161410"/>
+            <text x="320" y="66" text-anchor="middle" font-size="13" font-family="Georgia, serif">Control API</text>
+            <text x="320" y="86" text-anchor="middle" font-size="11" fill="#5c564c">AuthN + governance</text>
+            <polygon points="404,71 434,71 434,66 454,76 434,86 434,81 404,81" fill="#8c3d24"/>
+            <rect x="466" y="28" width="190" height="86" fill="#161410"/>
+            <text x="561" y="62" text-anchor="middle" font-size="13" fill="#f6f1e8" font-family="Georgia, serif">CCA core</text>
+            <text x="561" y="82" text-anchor="middle" font-size="11" fill="#e0b089">Model · PDP · compiler</text>
+            <polygon points="656,71 686,71 686,66 706,76 686,86 686,81 656,81" fill="#8c3d24"/>
+            <rect x="718" y="36" width="118" height="70" fill="#efe8db" stroke="#161410"/>
+            <text x="777" y="66" text-anchor="middle" font-size="13" font-family="Georgia, serif">State</text>
+            <text x="777" y="86" text-anchor="middle" font-size="11" fill="#5c564c">SQLite snapshot</text>
+            <line x1="561" y1="114" x2="561" y2="154" stroke="#161410"/>
+            <rect x="236" y="160" width="420" height="48" fill="#fffdf8" stroke="#8c3d24"/>
+            <text x="446" y="190" text-anchor="middle" font-size="13">Compiler JSON preview — no live push</text>
+            <line x1="280" y1="208" x2="280" y2="232" stroke="#161410"/>
+            <line x1="380" y1="208" x2="380" y2="232" stroke="#161410"/>
+            <line x1="480" y1="208" x2="480" y2="232" stroke="#161410"/>
+            <line x1="580" y1="208" x2="580" y2="232" stroke="#161410"/>
+            <rect x="228" y="232" width="104" height="44" fill="#efe8db" stroke="#161410"/>
+            <text x="280" y="259" text-anchor="middle" font-size="12">ES DLS</text>
+            <rect x="328" y="232" width="104" height="44" fill="#efe8db" stroke="#161410"/>
+            <text x="380" y="259" text-anchor="middle" font-size="12">BW auth</text>
+            <rect x="428" y="232" width="104" height="44" fill="#efe8db" stroke="#161410"/>
+            <text x="480" y="259" text-anchor="middle" font-size="12">BOBJ</text>
+            <rect x="528" y="232" width="104" height="44" fill="#efe8db" stroke="#161410"/>
+            <text x="580" y="259" text-anchor="middle" font-size="12">Warehouse</text>
+            <text x="430" y="300" text-anchor="middle" font-size="11" fill="#5c564c">Targets remain final PEPs. No external adapter is connected in this build.</text>
+          </svg>
+          <figcaption>Figure 1. Trust path. The console visualizes policy; the API authenticates and records; CCA core decides and compiles; the state repository is a single-node SQLite snapshot. Connector workers described in architecture notes are not implemented.</figcaption>
+        </figure>
+
+        <h3>One contract, many enforcement points</h3>
+        <figure>
+          <svg viewBox="0 0 860 280" role="img" aria-labelledby="pep-title pep-desc">
+            <title id="pep-title">One contract, many PEPs</title>
+            <desc id="pep-desc">A single vendor ACME contract compiled toward Elasticsearch, BW, warehouse SQL, and a planned Tableau live connection.</desc>
+            <rect x="1" y="1" width="858" height="278" fill="#fffdf8" stroke="#c9bfb0"/>
+            <rect x="250" y="20" width="360" height="78" fill="#161410"/>
+            <text x="430" y="48" text-anchor="middle" font-size="14" fill="#f6f1e8" font-family="Georgia, serif">Contract vendor.acme.slice</text>
+            <text x="430" y="70" text-anchor="middle" font-size="12" fill="#e0b089">purpose vendor-performance · vendor_id from capsule.vendor_set</text>
+            <line x1="430" y1="98" x2="430" y2="128" stroke="#161410"/>
+            <line x1="110" y1="128" x2="750" y2="128" stroke="#161410"/>
+            <line x1="110" y1="128" x2="110" y2="150" stroke="#161410"/>
+            <line x1="323" y1="128" x2="323" y2="150" stroke="#161410"/>
+            <line x1="536" y1="128" x2="536" y2="150" stroke="#161410"/>
+            <line x1="750" y1="128" x2="750" y2="150" stroke="#161410"/>
+            <rect x="36" y="150" width="148" height="70" fill="#efe8db" stroke="#161410"/>
+            <text x="110" y="178" text-anchor="middle" font-size="13">Elasticsearch</text>
+            <text x="110" y="198" text-anchor="middle" font-size="11" fill="#5c564c">DLS terms query</text>
+            <rect x="249" y="150" width="148" height="70" fill="#efe8db" stroke="#161410"/>
+            <text x="323" y="178" text-anchor="middle" font-size="13">SAP BW</text>
+            <text x="323" y="198" text-anchor="middle" font-size="11" fill="#5c564c">0VENDOR values</text>
+            <rect x="462" y="150" width="148" height="70" fill="#efe8db" stroke="#161410"/>
+            <text x="536" y="178" text-anchor="middle" font-size="13">Warehouse</text>
+            <text x="536" y="198" text-anchor="middle" font-size="11" fill="#5c564c">Compiled SQL RLS</text>
+            <rect x="676" y="150" width="148" height="70" fill="#fffdf8" stroke="#8c3d24" stroke-dasharray="4 3"/>
+            <text x="750" y="178" text-anchor="middle" font-size="13">Tableau / PBI</text>
+            <text x="750" y="198" text-anchor="middle" font-size="11" fill="#8c3d24">Planned PEP</text>
+            <text x="430" y="250" text-anchor="middle" font-size="12" fill="#5c564c">Same predicate. Different native syntax. Tableau is guidance, not a shipped adapter.</text>
+          </svg>
+          <figcaption>Figure 2. One contract, many enforcement points. Warehouse SQL is enforced in the demo. ES/BW/BOBJ documents are generated. Tableau / Power BI / Looker adapters are target design, not shipped code.</figcaption>
+        </figure>
+
+        <h3>Robustness: verified local recovery and production target</h3>
+        <p><strong>Current verified boundary:</strong> the single-node SQLite control snapshot can be copied with SQLite online-backup semantics, parsed through the production snapshot loader, and checked against a hash-and-count manifest. Restore revalidates the bundle, swaps it transactionally, and retains a rollback bundle; path-component checks reject symbolic links. This is local backup/restore, not offsite, encrypted, immutable, point-in-time, or regional disaster recovery.</p>
+        <p><strong>Current evidence boundary:</strong> each audited mutation persists a complete JSON snapshot containing the growing audit array, so storage and write work grow with retained history (<code>O(N)</code> snapshot size). The local unkeyed hash chain can reveal inconsistent retained events, but a writer able to replace the complete mutable snapshot can truncate or recompute it. A colocated backup manifest proves bundle integrity, not external audit anchoring.</p>
+        <ul>
+          <li>Stateless API/PDP replicas across failure domains backed by a transactional policy store.</li>
+          <li>Outbox-backed connector work so state change and delivery cannot diverge.</li>
+          <li>Signed policy versions, an explicitly bounded last-known-good cache, and authorization epochs in cache keys.</li>
+          <li>Fail closed for restricted reads, writes, export, JIT, and governance; no generic fail-open switch.</li>
+          <li>External append-only audit with an independent anchor, target evidence, offsite/encrypted backup, point-in-time restore, key rotation, chaos, and regional recovery tests.</li>
+        </ul>
+        <p class="note"><strong>No unmeasured promise:</strong> this repository has one SQLite writer. Availability, revocation, and recovery SLAs must be measured with the real identity provider, data volume, network, and target platforms before they are claimed.</p>
+      </section>
+
+      <section id="personas">
+        <h2>7. Current seeded personas and capsules</h2>
+        <p>These identities make the local scenario demonstrable; they are not the recommended production role taxonomy. Production should map them to the five reusable Viewer / Operator / Data Steward / Security Auditor / Platform Admin capability personas plus shared scopes. Shared demo password: <code>cca-demo</code>.</p>
+        <table>
+          <thead>
+            <tr><th>User</th><th>Persona</th><th>Verbs / ceiling</th><th>Capsule</th><th>Purpose</th><th>Typical products</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>dana.owner</code><br>Dana Morgan</td>
+              <td>Data Owner</td>
+              <td>view, audit / restricted</td>
+              <td>Unified data governance</td>
+              <td>data-governance</td>
+              <td>Every registered warehouse product and all four pipeline families; complete explicit field allowlist through <code>wh.data-owner</code></td>
+            </tr>
+            <tr>
+              <td><code>ana.l1</code><br>Ana Cole</td>
+              <td>L1 Support</td>
+              <td>view / internal</td>
+              <td>Support L1</td>
+              <td>incident-triage</td>
+              <td>events, tickets, process_chains; SLA and PC status (vendor_id masked)</td>
+            </tr>
+            <tr>
+              <td><code>ben.l2bw</code><br>Ben Walsh</td>
+              <td>L2 BW</td>
+              <td>view, operate / confidential</td>
+              <td>Support L2 BW</td>
+              <td>replication-repair</td>
+              <td>events, transactions, telemetry, process_chains, bw_vendor; PC detail without payload</td>
+            </tr>
+            <tr>
+              <td><code>cara.l2bobj</code><br>Cara Nguyen</td>
+              <td>L2 BOBJ</td>
+              <td>view, operate / confidential</td>
+              <td>Support L2 BOBJ</td>
+              <td>report-repair</td>
+              <td>tickets, bobj; BOBJ universe/report ops</td>
+            </tr>
+            <tr>
+              <td><code>dev.obs</code><br>Dev Okonkwo</td>
+              <td>Pipeline / ES Ops</td>
+              <td>view, operate, rotate / internal</td>
+              <td>Platform observability</td>
+              <td>pipeline-reliability</td>
+              <td>events, telemetry, es_logs; PC detail masked (no vendor_id, payload, error_dump)</td>
+            </tr>
+            <tr>
+              <td><code>emma.acme</code><br>Emma Patel</td>
+              <td>Business consumer</td>
+              <td>view / confidential</td>
+              <td>Vendor ACME</td>
+              <td>vendor-performance</td>
+              <td>customers, transactions, inventory, bw_vendor for V1001/V1002/ACME</td>
+            </tr>
+            <tr>
+              <td><code>finn.globex</code><br>Finn Okafor</td>
+              <td>Business consumer</td>
+              <td>view / confidential</td>
+              <td>Vendor Globex</td>
+              <td>vendor-performance</td>
+              <td>Same products, vendor set V2001/V2002/GLOBEX</td>
+            </tr>
+            <tr>
+              <td><code>gita.steward</code><br>Gita Shah</td>
+              <td>Data steward</td>
+              <td>view, administer / confidential</td>
+              <td>Vendor ACME</td>
+              <td>vendor-performance</td>
+              <td>Same ACME slice as Emma; steward verbs on the persona</td>
+            </tr>
+            <tr>
+              <td><code>hugo.admin</code><br>Hugo Meyer</td>
+              <td>Platform admin</td>
+              <td>administer, audit, rotate / none</td>
+              <td>Control plane</td>
+              <td>governance</td>
+              <td>Audit and lifecycle only. Ceiling <code>none</code> does not pass the data-path ceiling check.</td>
+            </tr>
+            <tr>
+              <td><code>iris.admin</code><br>Iris Chen</td>
+              <td>Platform admin</td>
+              <td>administer, audit, rotate / none</td>
+              <td>Control plane</td>
+              <td>governance</td>
+              <td>Independent governance review and control-plane operations only. Ceiling <code>none</code> does not pass the data path.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Least-privilege pipeline stages</h3>
+        <div class="flow-line" aria-label="Seeded workload authorization stages">
+          <span><b>pc.vendor.replicate</b><br>read restricted S/4 → write restricted BW stage</span>
+          <span><b>pc.vendor.activate</b><br>read BW stage → write governed BW provider</span>
+          <span><b>pc.vendor.telemetry</b><br>read sanitized chain status → write ES technical logs</span>
+        </div>
+        <p>Each stage has a separate workload principal, capsule, contract set, and compiled SPIFFE-shaped desired identity. The replicator is explicitly denied provider write, so compromise of the first stage does not inherit the activation stage. These identities still use the shared password only as local fixtures; no SPIFFE credential is issued and no SAP, BW, ADF, or Elasticsearch target is changed. Parent capsule <code>Vendor domain</code> exists so local offboard can cascade ACME and Globex together.</p>
+      </section>
+
+      <section id="decision">
+        <h2>8. Decision equation (deny by default)</h2>
+        <p>Missing context is a denial. Clients cannot omit purpose, scope, or the record to widen a decision. The implemented check is:</p>
+        <div class="eq">
+          Allow iff principal is live
+          <span>and</span> persona has the verb
+          <span>and</span> purpose is present
+          <span>and</span> a live capsule exists
+          <span>and</span> (control-plane rule <span>or</span> a matching standing contract <span>or</span> an approved JIT snapshot that still passes the same row and classification checks).
+          Otherwise deny.
+        </div>
+        <h3>Contract allow (data path)</h3>
+        <ol class="checks">
+          <li>Unknown, disabled, or time-invalid subject → deny.</li>
+          <li>Persona lacks the requested action → <code>persona_lacks_verb</code>.</li>
+          <li>Purpose missing or blank → <code>purpose_required</code>.</li>
+          <li>No active capsule membership → <code>no_capsule_membership</code>.</li>
+          <li>Binding must join a live capsule to a contract on that dataset; persona id (or <code>inherits</code>) must be allowed; contract must include the action.</li>
+          <li>Purpose must equal the contract purpose.</li>
+          <li>Record or dataset classification must be at or under the contract maximum <em>and</em> the persona ceiling. Ceiling <code>none</code> fails the data path.</li>
+          <li>If the predicate is not <code>true</code>, a record is required; the predicate is evaluated against record attributes and capsule attributes (<code>eq</code>, <code>in</code>, <code>fromCapsuleAttr</code>, <code>and</code>, <code>or</code>).</li>
+          <li>Every matching candidate is kept. Deny-fields are the union (conservative). A later valid contract cannot be hidden by an earlier miss.</li>
+        </ol>
+        <h3>Control-plane path</h3>
+        <p>Datasets marked <code>controlPlane</code> (the audit log) require purpose <code>governance</code>, an action of <code>audit</code>, <code>administer</code>, or <code>rotate</code>, and membership in the <code>control-plane</code> capsule.</p>
+        <h3>JIT fallback</h3>
+        <p>JIT is evaluated only when no standing contract allows the request. It is not a dataset-wide bypass. A request must resolve a predeclared <code>approvalRequired</code> contract bound to the live capsule and allowed persona. The grant snapshots contract id, frozen predicate and capsule attributes, classification maximum, field allow/deny lists, actions, purpose, policy version, assurance context, and expiry. At use time the PDP rechecks live principal/capsule state, persona verb, exact resource/purpose/action, not-before/expiry, the frozen row predicate, and both persona and contract classification ceilings. Released fields are the dataset allowlist intersected with the JIT allowlist, minus JIT denies.</p>
+        <p>Approval is by a different control-plane Platform Admin and may not widen the requested envelope. The requester or a Platform Admin can revoke an approved grant with a reason; membership removal, capsule offboard, principal disablement, or expiry also closes it. Regression tests prove the frozen ACME vendor set never returns GLOBEX after live scope changes. There is no seeded restricted S/4 JIT template: an unconfigured request fails early, and even a test-injected restricted template fails because its dataset is above the L2 confidential ceiling.</p>
+      </section>
+
+      <section id="studio">
+        <h2>9. Role Studio: rules, not an LLM</h2>
+        <p>Role Studio turns a business need into a reviewable draft and then submits a governed standing-access request. Editing or previewing the draft never assigns access.</p>
+        <ul>
+          <li><strong>Ask-to-role is a parser.</strong> <code>parseNeedToRole</code> matches phrases (process chain, BW vendor, BOBJ, ES logs, tenants, regions, “not vendor PII”, and so on). It is deterministic. There is no model call.</li>
+          <li><strong>Canvas is tokens.</strong> Verbs, purpose, ceiling, SAP and generic products, sources, tenants, regions, departments, and field masks. Click or drag onto wells. Validation is schema-bound to approved enumerations.</li>
+          <li><strong>Preview is metadata only.</strong> Impact totals run against the warehouse filter. Record samples are stripped from authoring preview so a draft cannot leak rows.</li>
+          <li><strong>Request-only apply path.</strong> <code>POST /api/role-requests</code> freezes the draft and review evidence. The legacy-looking <code>POST /api/roles/apply</code> route always returns <code>approval_workflow_required</code>; there is no direct assignment route.</li>
+          <li><strong>No membership back door.</strong> <code>POST /api/capsules/:capsuleId/members</code> and the core lifecycle reject every business/data capsule add with <code>approval_workflow_required</code>. Only explicit control-plane administrator recovery retains a direct add.</li>
+          <li><strong>Two independent approval roles.</strong> Every request requires one eligible <code>data-owner</code> approval and one eligible <code>governance-admin</code> approval from two different people. The requester and target cannot review the request, the same reviewer cannot satisfy both roles, and the request is rejected up front if an independent pair is unavailable.</li>
+          <li><strong>Partial approval grants nothing.</strong> The first decision is stored and shown as progress while the request remains unapplied. Before the second approval, the service revalidates reviewer authority, target state, frozen evidence, and separation-of-duty results; only then does internal <code>applyRoleDraft</code> content-address and reuse a capability persona, scoped capsule, and matching contract, store the assigned persona on a uniquely identified membership, and retire superseded Role Studio memberships.</li>
+          <li><strong>Separation of duty is executable.</strong> Versioned local rules evaluate standing plus candidate warehouse access and reject: operating both <code>s4_master</code> and <code>transactions</code>; combining purpose <code>audit</code> with <code>operate</code>; or combining purpose <code>data-governance</code> with <code>operate</code>.</li>
+        </ul>
+        <p class="note"><strong>Configuration boundary:</strong> the seeded Data Owner and those three SoD rules are intentionally hard-coded reference fixtures, not a generic ownership registry or policy administration engine. Production must constrain roles to approved capability templates, derive accountable owners from governed resource relationships, and manage organization-specific, versioned conflict rules.</p>
+        <p><strong>Both authorship paths work in the demo:</strong> a non-reviewer self-request is approved by <code>dana.owner</code> plus either independent admin. If <code>hugo.admin</code> authors a cross-target request, Dana plus <code>iris.admin</code> must approve it because Hugo is ineligible to review his own request; the reverse applies when Iris authors. Both admins have control-plane membership and no business-data ceiling.</p>
+        <p>Example asks the parser is tested against:</p>
+        <ul>
+          <li><code>L1 support should see process chain health but not vendor PII</code></li>
+          <li><code>ACME finance team only NA transactions</code></li>
+          <li><code>observability can see ES/pipeline logs with payload stripped</code></li>
+          <li><code>GLOBEX EU team needs BW vendor analytics and customer tickets, no bank accounts</code></li>
+        </ul>
+        <h3>Manual access recertification</h3>
+        <p>A Governance Admin can start or renew a recertification campaign. The seeded Data Owner and Governance Admin can list evidence and decide only items for which their reviewer role is eligible: administrator access requires Data Owner review, Data Owner access requires Governance Admin review, and ordinary human access permits either. Each item captures the exact human membership assignment id plus principal, capsule, persona, and a fingerprint. Attest keeps that assignment; revoke removes that exact assignment and retains the last-admin safeguard. A reviewer cannot certify their own membership.</p>
+        <p class="note"><strong>Current limitation:</strong> campaigns include active human memberships only. There is no scheduler, notification service, workload-membership review, or automatic overdue enforcement. Status is refreshed when a recertification endpoint is used; passing the due time marks a campaign expired but does not revoke its pending memberships.</p>
+      </section>
+
+      <section id="data">
+        <h2>10. Dataset, classification, catalog, and lineage</h2>
+        <h3>Reference data product: vendor process-chain runs</h3>
+        <p>The safest monitoring product is curated separately from raw replication payload. Scope dimensions travel with every row; prohibited secrets are rejected before ingest.</p>
+        <table>
+          <thead>
+            <tr><th>Field</th><th>Classification</th><th>Security use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>tenant_id</code></td><td>Security</td><td>Mandatory isolation guard from trusted resource context</td></tr>
+            <tr><td><code>company_code</code>, <code>purchasing_org</code>, <code>plant</code></td><td>Internal</td><td>Business row-scope dimensions</td></tr>
+            <tr><td><code>chain_id</code>, <code>run_id</code>, source, target</td><td>Internal</td><td>Process identity and lineage</td></tr>
+            <tr><td>Status, timestamps, extracted/loaded counts</td><td>Internal</td><td>Team dashboards and reconciliation</td></tr>
+            <tr><td><code>vendor_id</code>, <code>vendor_name</code></td><td>Confidential</td><td>Mask or release by approved purpose</td></tr>
+            <tr><td><code>error_message_sanitized</code></td><td>Internal</td><td>Operator diagnosis</td></tr>
+            <tr><td><code>raw_error_payload</code></td><td>Restricted</td><td>Separate break-glass resource; never an ordinary log field</td></tr>
+            <tr><td>Credential, token, private key, secret</td><td>Prohibited</td><td>Reject/quarantine and alert before indexing</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Access matrix over the same source</h3>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Subject</th><th>Rows</th><th>Fields</th><th>Actions / conditions</th></tr></thead>
+            <tbody>
+              <tr><td>Vendor Ops US</td><td><code>tenant=A AND purchasing_org IN (US01, US02)</code></td><td>Operational fields; vendor id last-four</td><td>View for operations; no export</td></tr>
+              <tr><td>L2 BW</td><td>Assigned chains and company codes</td><td>Technical detail; raw payload denied</td><td>View, run, retry</td></tr>
+              <tr><td>Platform Ops</td><td>All chain-health rows</td><td>No vendor identity or business payload</td><td>Monitor/operate</td></tr>
+              <tr><td>Finance Audit</td><td>Approved company codes</td><td>Clear vendor id only during case-bound JIT</td><td>View; export separately approved</td></tr>
+              <tr><td>Platform Admin</td><td>No business rows by default</td><td>Policy and connector metadata</td><td>Administer</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>How CCA learns what data exists</h3>
+        <ol class="checks">
+          <li>Connectors inventory systems, schemas, fields, BW objects, indexes, semantic models, dashboards, existing access, and direct-query paths.</li>
+          <li>Lineage links S/4 source → BW object/process chain → Elasticsearch, warehouse, or ADF destination → BI semantic model.</li>
+          <li>Rules and scanners propose classifications. Inferred labels remain candidates; automation never auto-grants.</li>
+          <li>The accountable owner confirms classification, permitted purposes, and scope dimensions.</li>
+          <li>The resource publishes only when required enforcement capabilities pass the fidelity firewall.</li>
+          <li>Schema, labels, lineage, ownership, and actual target grants are rescanned and reconciled.</li>
+        </ol>
+        <p class="note"><strong>Current answer:</strong> CCA only knows seeded/manually registered resources, fields, classifications, capsule attributes, and the demo’s hard-coded Data Owner relationship. It has a local two-role approval workflow, but no crawler, production catalog, classification scanner, lineage collector, generic resource-owner registry, or entitlement-discovery connector. Unknown/unclassified data must remain restricted until those governed inputs exist.</p>
+
+        <h3>Local dataset used by the demo</h3>
+        <p>The first API start builds one deterministic 100,000-row synthetic unified store at <code>data/cca.sqlite</code>. It is one physical fact store, not one copy per role. Each fact carries business-scope, source-pipeline, and classification dimensions. Queries compile product plus optional tenant, region, department, source/pipeline, and classification ceiling into parameterized SQL, then apply an explicit field allowlist and deny obligations before returning a bounded page.</p>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Modeled ingestion family</th><th>Representative source</th><th>Unified products</th><th>Required control</th></tr></thead>
+            <tbody>
+              <tr><td><code>sap-s4-bw-vendor</code></td><td>SAP S/4HANA → SAP BW → CCA Unified Data Store</td><td><code>s4_master</code>, <code>bw_vendor</code>, <code>process_chains</code></td><td>Restricted source fields do not become support data.</td></tr>
+              <tr><td><code>sap-bw-elastic-ops</code></td><td>SAP BW → Elasticsearch → CCA Unified Data Store</td><td><code>es_logs</code>, events, telemetry</td><td>Technical messages are separated from raw payload and vendor identifiers.</td></tr>
+              <tr><td><code>azure-adf-business-load</code></td><td>Azure Data Factory → CCA Unified Data Store</td><td>customers, transactions, inventory</td><td>Tenant and field tags survive landing and transformation.</td></tr>
+              <tr><td><code>sap-bobj-report-refresh</code></td><td>SAP BusinessObjects → CCA Unified Data Store</td><td><code>bobj</code>, tickets</td><td>Operational metadata does not imply access to business payload.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Separate hand-authored core records cover SLA, process-chain status/detail, BW vendor, S/4 vendor master, BOBJ, and Elasticsearch examples. Those small records test individual PDP decisions; the unified store tests large row scopes, field projection, pagination, and role-to-role isolation.</p>
+        <p>Desired state lives in <code>data/cca-control.sqlite</code> as a single snapshot. Demo/test startup may migrate v2→v3 only when legacy JIT is empty and every membership persona resolves from validated principal data; the migration is audited. Production refuses automatic v2 migration and requires a reviewed offline procedure. This remains a one-node demonstration persistence boundary, not an enterprise catalog or multi-replica policy database.</p>
+      </section>
+
+      <section id="auth">
+        <h2>11. Authentication, JIT, onboarding, and offboarding</h2>
+        <h3>Authentication is not authorization</h3>
+        <p><strong>Current local authentication:</strong> demo mode exposes a seeded directory and scrypt password login. The demo JWT is short lived. Production mode disables those routes and validates a strict HS256 token contract intended for an upstream broker, with issuer, audience, subject, expiry, issued-at, token id, purpose, bounded lifetime, authentication assurance (<code>password</code>, <code>mfa</code>, or <code>phishing-resistant</code>), a required 64-hex authorization fingerprint, and current persona/kind checks. The fingerprint covers exact live membership assignment ids, personas, and capsules and is recomputed on every protected request; removal invalidates the token, and same-capsule re-grant cannot revive it. JIT assurance is copied from that verified token, never trusted from the request body; the upstream issuer remains responsible for actually establishing MFA. The web app stores its bearer token in tab-scoped <code>sessionStorage</code>, removes legacy <code>localStorage</code>, warns shortly before expiry, and clears protected state on expiry, 401, or account switch.</p>
+        <p><strong>Not implemented:</strong> enterprise OIDC authorization flow, SCIM/HR sync, WebAuthn/conditional access, DPoP or mTLS token binding, cloud managed identity, SPIFFE issuance, certificate rotation, or lifecycle connectors. The API sets cache, MIME, and referrer hardening headers and the local HTML installs a baseline document-level CSP, but JavaScript can still read the current bearer token and production still needs a tested response-header CSP. The compiler’s SPIFFE string is desired state, not workload authentication.</p>
+        <p><strong>Production target:</strong> OIDC/BFF with Authorization Code + PKCE, exact redirects, phishing-resistant MFA and step-up for privileged actions, and an <code>HttpOnly</code>, <code>Secure</code>, appropriately <code>SameSite</code> session cookie with CSRF protection and a restrictive tested CSP; unique short-lived managed/SPIFFE identities for pipelines; narrow vaulted SAP communication identities only where legacy integration requires them.</p>
+
+        <h3>JIT is a bounded policy snapshot—not a bypass</h3>
+        <ul>
+          <li>The request resolves exactly one predeclared <code>approvalRequired</code> contract bound to the active capsule and permitted persona.</li>
+          <li>The grant snapshots contract id, frozen predicate and capsule attributes, classification maximum, allow/deny fields, actions, purpose, policy version, server-derived token assurance, and expiry.</li>
+          <li>A different active control-plane Platform Admin approves; approval cannot widen rows, class, fields, actions, purpose, assurance, or duration.</li>
+          <li>Each use re-evaluates live identity/membership, persona action, resource/purpose, time, frozen row predicate, persona ceiling, contract ceiling, and field intersection.</li>
+          <li>Requester or Platform Admin can revoke with reason; disablement, membership removal, capsule offboard, or expiry also closes the online grant.</li>
+        </ul>
+        <p class="note"><strong>Required regression:</strong> an ACME-scoped L2 JIT grant returns only the frozen ACME vendor set, never GLOBEX, even if live capsule attributes later change. Restricted S/4 JIT is rejected before approval when no eligible template exists or the requester ceiling is too low. The same invariant must hold in the PDP, API, SQL path, and each target adapter.</p>
+
+        <h3>Smooth onboarding</h3>
+        <div class="flow-line" aria-label="Onboarding workflow">
+          <span><b>Authoritative identity</b><br>active worker/workload and fresh attributes</span>
+          <span><b>Relationship</b><br>team and data-owner assignment</span>
+          <span><b>Policy proof</b><br>simulate positive/negative cases and SoD</span>
+          <span><b>Delivery</b><br>compile, apply, read back, activate</span>
+        </div>
+
+        <h3>Current periodic review boundary</h3>
+        <p>Manual recertification snapshots active human assignments by assignment id and membership fingerprint, accepts attest or exact-assignment revoke decisions from an eligible non-self reviewer, and preserves the last control-plane admin. It does not schedule campaigns, notify reviewers, include workload memberships, or revoke access merely because an undecided item is overdue.</p>
+
+        <h3>One team-offboard action</h3>
+        <ol class="checks">
+          <li>Mark team/capsule inactive so online decisions deny.</li>
+          <li>Revoke sessions/refresh and update the authorization epoch.</li>
+          <li>Remove memberships, bindings, JIT, and expiring access leases.</li>
+          <li>Disable or transfer team-owned workload identities and secrets.</li>
+          <li>Apply removal to every target, read it back, and prove zero residual grants.</li>
+          <li>Retain correlated, immutable completion evidence.</li>
+        </ol>
+        <p><strong>Current local behavior:</strong> a control-plane admin can deactivate one capsule or descendants, remove local memberships/bindings, expire local JIT, and receive pre-removal compiler previews. The control-plane capsule and last-admin safeguards remain. Because fidelity is blocked, the execution/revoke plan is empty; nothing is sent to SAP or Elasticsearch, and the repository cannot yet prove external removal.</p>
+      </section>
+
+      <section id="bi">
+        <h2>12. Threat model and platform enforcement points</h2>
+        <h3>Priority threats</h3>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Threat</th><th>Failure</th><th>Control</th></tr></thead>
+            <tbody>
+              <tr><td>Dashboard-only filter</td><td>Direct query exposes another team</td><td>Server/store/semantic-model PEP on every path</td></tr>
+              <tr><td>Shared pipeline account</td><td>One secret exposes every source and target</td><td>Unique managed/SPIFFE identity per pipeline/data product</td></tr>
+              <tr><td>Stale team membership</td><td>Leaver retains access</td><td>SCIM event, online inactive guard, short session, lease, target reconcile</td></tr>
+              <tr><td>Multiple-role union</td><td>Rows from one grant combine with fields from another</td><td>Atomic capsules; conservative composition; isolated projection</td></tr>
+              <tr><td>JIT without row/class bound</td><td>Temporary access becomes dataset-wide</td><td>Frozen predicate and ceilings rechecked per record</td></tr>
+              <tr><td>Admin implies data access</td><td>Control-plane compromise becomes data compromise</td><td>Management/data split; independently approved temporary data capsule</td></tr>
+              <tr><td>Classification lost in copy</td><td>Target releases restricted field</td><td>Lineage label propagation and destination capability gate</td></tr>
+              <tr><td>Target manual grant/drift</td><td>Native state exceeds approved policy</td><td>Read-back, reconciliation, alert/quarantine, signed evidence</td></tr>
+              <tr><td>PDP outage</td><td>Fail-open or broad stale decision</td><td>HA PDP, bounded versioned cache, fail closed on high risk</td></tr>
+              <tr><td>Aggregate/search inference</td><td>Restricted cohort can be inferred</td><td>Cohort limits, pre-aggregation, query controls, or physical isolation</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Native enforcement map</h3>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Platform</th><th>Correct PEP</th><th>Caveat</th><th>Repository status</th></tr></thead>
+            <tbody>
+              <tr><td>S/4HANA</td><td>PFCG/authorization objects for functions; CDS DCL for instance data; narrow extraction identity</td><td>Human access must not reuse a broad extraction account</td><td><span class="status-key target">Target</span></td></tr>
+              <tr><td>BW/4HANA</td><td>Standard auth for model/load; analysis auth for authorization-relevant characteristics; <code>S_RS_PC</code>/<code>S_RS_ADMWB</code> for chain actions</td><td>Field-isolated monitoring may require a governed query/data product</td><td><span class="status-key preview">JSON preview</span></td></tr>
+              <tr><td>Elasticsearch</td><td>Read-only index privilege + DLS + FLS</td><td>Multiple roles widen access; aggregates may infer; sensitive cohorts may need separate indexes</td><td><span class="status-key preview">JSON preview</span></td></tr>
+              <tr><td>ADF</td><td>Azure management RBAC + unique managed identity; source/target data PEP</td><td>ADF orchestrates; it is not interactive row-level security</td><td><span class="status-key target">Identity shape only</span></td></tr>
+              <tr><td>Warehouse</td><td>Native RLS/CLS/masking or governed view</td><td>Test owner/superuser, export, clone, time-travel, and service paths</td><td><span class="status-key current">Local SQL only</span></td></tr>
+              <tr><td>Power BI</td><td>Semantic-model RLS/OLS; consumers Read/Viewer only</td><td>Write/Contributor/Member/Admin can bypass RLS; segregate creators</td><td><span class="status-key target">Target</span></td></tr>
+              <tr><td>Tableau / Looker</td><td>Store RLS plus compiled identity/group policy; secured extract as new dataset</td><td>Workbook filters, hidden sheets, and unfiltered extracts are not security</td><td><span class="status-key target">Target</span></td></tr>
+              <tr><td>API/basic app</td><td>Minimal <code>POST /access/v1/evaluation</code> adapter asks the canonical PDP; application PEP applies returned obligations</td><td>Current adapter is dataset/purpose/optional-record scoped; broader SDK and conformance work remains</td><td><span class="status-key current">Local adapter</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note"><strong>BI rule:</strong> prefer live connection plus store/semantic-model security. Any extract or import is data movement and becomes a new governed resource. No BI adapter exists in this repository.</p>
+      </section>
+
+      <section id="compiler">
+        <h2>13. AuthZEN, compiler outputs, and fidelity</h2>
+        <h3>Application interoperability: minimal adapter now, broader target next</h3>
+        <p>The current API exposes <code>POST /access/v1/evaluation</code> using the OpenID Authorization API shape: <code>subject</code>, <code>action</code>, <code>resource</code>, and <code>context</code>. It accepts a user/workload subject, a CCA action, a dataset, trusted purpose, and optional <code>recordId</code>. A normal caller can evaluate only the authenticated subject and its purpose must exactly match a scoped token. Cross-subject checks require a Platform Admin; a scoped admin token must be governance-scoped. Records are resolved server side, unknown or mismatched resources deny, and every evaluation is audited.</p>
+        <pre class="eq" aria-label="AuthZEN-shaped evaluation request">{
+  subject: { type: "user", id: "emma.acme" },
+  action: { name: "view" },
+  resource: { type: "dataset", id: "bw_vendor" },
+  context: { purpose: "vendor-performance", recordId: "bw-1" }
+}</pre>
+        <p>The response returns <code>decision</code> plus reason and obligations: allowed/denied fields, matching contract ids, capsule ids, and JIT policy version when applicable. The application PEP must apply every obligation before data release.</p>
+        <p class="note"><strong>Boundary:</strong> this is a strict minimal reference adapter, not a claim of ecosystem-wide conformance. General resource types, richer DataScope and mask/no-export/maximum-row obligations, batch/search evaluation, PEP SDKs, conformance suites, and enterprise identity remain target work.</p>
+
+        <h3>Desired-state compiler now</h3>
+        <p>Admin routes <code>GET /api/compiler</code> and <code>GET /api/compiler/:capsuleId</code> return local JSON. Every capsule result has a deterministic <code>policyHash</code> and <code>policyVersion</code>, only active persona-compatible assignments, a <code>deploymentStatus</code>, <code>previewOnly</code>, target capability gates, and target-shaped artifacts. Required purpose/row fidelity is not available in current target compilers, so seeded target-bearing policies are blocked and their apply/revoke/read-back arrays are empty. No external target adapter or connector is present.</p>
+        <table>
+          <thead><tr><th>Compiler envelope</th><th>Meaning now</th><th>What it does not prove</th></tr></thead>
+          <tbody>
+            <tr><td>Hash + version</td><td>Content-address the capsule, bindings, contracts, datasets, and current assignments.</td><td>No signature, release approval, or target deployment.</td></tr>
+            <tr><td>Assignments</td><td>Include only active members whose relationship persona, action set, and class ceiling satisfy the contract.</td><td>No external group or native-role membership exists.</td></tr>
+            <tr><td>Capability gates</td><td>Compare required versus locally modeled support for classification, rows, allow/deny fields, purpose, and workload identity; missing requirements block the artifact.</td><td>No discovery of the installed target version, edition, license, configuration, or bypass paths.</td></tr>
+            <tr><td>Plan</td><td>Schema for future apply, delete, and <code>policy_hash_and_assignments</code> read-back operations.</td><td>Blocked policies keep all arrays empty; no worker executes operations or records target evidence.</td></tr>
+          </tbody>
+        </table>
+        <table>
+          <thead>
+            <tr><th>Target</th><th>What is emitted today</th><th>When</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Elasticsearch</td>
+              <td>Role name, index pattern <code>&lt;normalized-dataset&gt;-&lt;12-hex-SHA256-prefix&gt;-*</code>, read privilege, DLS query compiled from the predicate (unsafe input becomes <code>match_none</code>), dataset field allowlist, and contract denies. Normalization uses NFKC, replaces unsafe characters, bounds length, and appends the hash prefix to prevent sanitized-name collisions.</td>
+              <td>Any bound contract that includes <code>view</code>.</td>
+            </tr>
+            <tr>
+              <td>SAP BW</td>
+              <td>Analysis-authorization shaped object: name <code>ZCCA_…</code>, InfoProvider <code>ZVNDR_ANL</code> or <code>ZPC_MON</code>, characteristic <code>0VENDOR</code> with compiled values (including <code>*</code> or capsule vendor_set).</td>
+              <td>Contracts on <code>bw_vendor</code> or <code>pc_detail</code>.</td>
+            </tr>
+            <tr>
+              <td>BOBJ</td>
+              <td>Group names and folder paths under <code>/ops/…</code>.</td>
+              <td>Contracts on dataset <code>bobj</code>.</td>
+            </tr>
+            <tr>
+              <td>Dashboards / spaces</td>
+              <td>Space id = capsule id.</td>
+              <td>Contracts on <code>bw_vendor</code> or contract ids starting with <code>health</code>.</td>
+            </tr>
+            <tr>
+              <td>ADF / workload</td>
+              <td>SPIFFE id <code>spiffe://cca/capsule/…</code> and vault path. Empty unless the capsule has an active workload member <em>and</em> a bound contract includes <code>operate</code> or <code>rotate</code>.</td>
+              <td>Pipeline capsule in the seed.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Current compilation fails closed on unsafe predicate material and on locally known missing capabilities. It does not yet publish a discovered and certified per-version capability manifest for every target or implement native masking, general SAP dimensions, purpose/JIT delivery, connector apply, rollback, executed read-back, drift, or target audit.</p>
+
+        <h3>Adapter definition of done</h3>
+        <ol class="checks">
+          <li>Declare exact platform version/edition and capability manifest.</li>
+          <li>Produce deterministic plan and diff from one signed policy version.</li>
+          <li>Apply and revoke idempotently with bounded retry and rollback.</li>
+          <li>Read target state back; do not mark active/revoked until it matches.</li>
+          <li>Continuously detect drift and quarantine unsafe targets.</li>
+          <li>Run differential tests proving the target returns exactly what the canonical PDP returns for the same subjects and data.</li>
+        </ol>
+      </section>
+
+      <section id="run">
+        <h2>14. Run the demo and interpret verification</h2>
+        <p>Requires Node.js 24+ and npm 11+.</p>
+        <ol>
+          <li>From the repository root: <code>npm install</code></li>
+          <li>Run <code>npm run preflight</code> for repository typechecks, core/API/web tests, and production builds.</li>
+          <li>Run <code>npm audit --omit=dev --audit-level=high</code> for the dependency gate.</li>
+          <li><code>npm run dev</code> builds <code>@cca/core</code> and starts API + Vite console. API dev sets <code>CCA_MODE=demo</code>.</li>
+        </ol>
+        <table>
+          <thead>
+            <tr><th>Surface</th><th>URL / value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>API</td><td><code>http://127.0.0.1:8787</code> — health <code>/api/health</code>, ready <code>/api/ready</code></td></tr>
+            <tr><td>Console</td><td><code>http://127.0.0.1:5173</code> — authenticated data access is under <strong>Access → Data</strong> (<code>#/data</code>)</td></tr>
+            <tr><td>Password</td><td><code>cca-demo</code> for every seeded principal</td></tr>
+            <tr><td>Unified store</td><td><code>data/cca.sqlite</code> (100,000 synthetic facts by default)</td></tr>
+            <tr><td>Control snapshot</td><td><code>data/cca-control.sqlite</code></td></tr>
+          </tbody>
+        </table>
+        <h3>Suggested walkthrough</h3>
+        <ol>
+          <li>If this checkout preserved a v2 demo snapshot, sign in as <code>hugo.admin</code>, open Lifecycle, choose <strong>Reset demo</strong>, and confirm <code>RESET</code> once to load the expanded v3 S/4→BW→ES fixtures. This replaces local demo policy and audit state and is unavailable in production.</li>
+          <li>At sign-in, verify that no data rows, record counts, schema, source, pipeline, or classification metadata appear and that no data endpoint is called.</li>
+          <li>Sign in as <code>dana.owner</code> (Data Owner, capsule <code>data-governance-owner</code>). Open <strong>Access → Data</strong>. Confirm the page says <strong>Signed in as …</strong> but contains zero rows until <strong>Run authorized view</strong> is selected.</li>
+          <li>Run the view. Confirm the title changes to <strong>…’s authorized records</strong>, the default store reports 100,000 synthetic facts, the complete explicit warehouse field allowlist is returned through <code>wh.data-owner</code>, the ceiling is Restricted, and <strong>Why this view is allowed</strong> identifies purpose <code>data-governance</code>. This is the controlled source baseline.</li>
+          <li>Select <strong>Switch account</strong>. Verify the old token, rows, counts, fields, receipt, and in-flight requests are cleared. Sign in as <code>emma.acme</code>, return to <code>#/data</code>, and run again. Confirm only ACME rows and her approved fields arrive over the network.</li>
+          <li>Repeat with <code>finn.globex</code>; confirm every returned row is GLOBEX and no ACME value is present. Repeat with <code>gita.steward</code>; confirm steward capabilities do not broaden the assigned tenant.</li>
+          <li>Repeat with <code>ana.l1</code>, <code>ben.l2bw</code>, <code>cara.l2bobj</code>, and <code>dev.obs</code>. For each identity, compare <strong>Protected fields</strong>, row scope, products, classification ceiling, source/pipeline lineage, and the <strong>Authorization receipt</strong> against the matrix below.</li>
+          <li>Finally use both <code>hugo.admin</code> and <code>iris.admin</code>. Confirm each Platform Admin can operate governance views but receives zero business rows and cannot obtain the Data Owner baseline by changing purpose, filters, route parameters, or client state.</li>
+          <li>Sign in as a non-reviewer test identity such as <code>ana.l1</code>, open <strong>Request a role</strong>, and ask: <code>L1 support should see process chain health but not vendor PII</code>. Generate, tweak, preview, and submit the frozen self-request. Confirm no access changes on submission.</li>
+          <li>Sign in as <code>dana.owner</code>, open <strong>Access Reviews</strong>, and approve as Data Owner. Confirm the request shows one of two approvals and remains unapplied. Then sign in as <code>hugo.admin</code> and approve as Governance Admin. Only now confirm that the reusable persona, capsule, warehouse contract, and uniquely identified membership appear.</li>
+          <li>Test the cross-target path separately: sign in as <code>hugo.admin</code>, open <strong>Role Studio</strong>, author and submit a request for a non-admin target, and confirm no access changes. Approve it first as <code>dana.owner</code>, then as <code>iris.admin</code>. Confirm Hugo cannot approve the request he authored and final application occurs only after Iris supplies the independent Governance Admin approval.</li>
+          <li>Open Policy compiler. Inspect JSON for Vendor ACME (ES terms on vendor_id, BW 0VENDOR, no live deploy banner).</li>
+          <li>Capsule lifecycle: offboard Vendor ACME. Emma loses the slice; Finn does not.</li>
+          <li>JIT: request from a non-admin against a predeclared bound contract. Approve only as Hugo, verify the row scope is unchanged, then revoke as requester or admin with a reason.</li>
+        </ol>
+        <h3>Role-by-role acceptance matrix</h3>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Identity</th><th>Positive assertion</th><th>Mandatory negative assertion</th></tr></thead>
+            <tbody>
+              <tr><td><code>dana.owner</code></td><td>All registered products, tenants, four source/pipeline families, classifications through Restricted, and the complete explicit field allowlist through <code>wh.data-owner</code>.</td><td>Access comes from the <code>data-governance-owner</code> capsule, never Platform Admin, login-page disclosure, or client impersonation.</td></tr>
+              <tr><td><code>ana.l1</code></td><td>Internal process-chain/ticket health and sanitized operational fields.</td><td>No Confidential/Restricted rows; <code>email</code>, <code>account_number</code>, <code>payload</code>, <code>vendor_id</code>, <code>bank_account</code>, and <code>legal_name</code> are absent.</td></tr>
+              <tr><td><code>ben.l2bw</code></td><td>Assigned BW, process-chain, transaction/telemetry operations through Confidential.</td><td>No Restricted rows; <code>account_number</code> is absent.</td></tr>
+              <tr><td><code>cara.l2bobj</code></td><td>Assigned ticket and BOBJ operational metadata through Confidential.</td><td>No unrelated products; <code>account_number</code> and <code>payload</code> are absent.</td></tr>
+              <tr><td><code>dev.obs</code></td><td>Internal Elasticsearch/pipeline telemetry within the assigned product scope.</td><td>No rows above Internal; <code>email</code>, <code>account_number</code>, and <code>payload</code> are absent.</td></tr>
+              <tr><td><code>emma.acme</code></td><td>Only ACME rows for approved analytics products through Confidential.</td><td>Zero GLOBEX/NOVA/HELIOS/ATLAS rows; <code>account_number</code> is absent.</td></tr>
+              <tr><td><code>finn.globex</code></td><td>Only GLOBEX rows under the same physical store through Confidential.</td><td>Zero ACME/NOVA/HELIOS/ATLAS rows; <code>account_number</code> is absent.</td></tr>
+              <tr><td><code>gita.steward</code></td><td>The same ACME row boundary as Emma with her steward capability profile.</td><td><code>administer</code> never expands tenant, product, purpose, or classification; <code>account_number</code> remains absent.</td></tr>
+              <tr><td><code>hugo.admin</code></td><td>Policy, connector, lifecycle, role-review, and audit metadata.</td><td>Zero business records and zero implicit raw-data projection.</td></tr>
+              <tr><td><code>iris.admin</code></td><td>Policy, connector, lifecycle, role-review, and audit metadata; independent review for requests authored by Hugo.</td><td>Zero business records and zero implicit raw-data projection.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note"><strong>Field-policy caution:</strong> the matrix above states the seeded contracts exactly. It is not a declaration that every other synthetic field is safe in production. Before using real data, accountable owners must classify fields such as email, vendor identity, legal name, bank data, tax identifiers, and payload, then tighten each contract allowlist accordingly.</p>
+        <p class="note"><strong>Network-level proof:</strong> inspect API responses, not only rendered columns. A test fails if an unauthorized value reaches browser memory and is then hidden by React or CSS. Each role test must also cover direct record lookup, crafted tenant/product/pipeline filters, purpose mismatch, sort/search/aggregate/export paths, rapid account switching, offboarding, JIT expiry, and a newly added database column.</p>
+        <h3>Security, failure, and scale gates</h3>
+        <div class="matrix-scroll">
+          <table>
+            <thead><tr><th>Gate</th><th>Evidence required</th><th>Release-blocking result</th></tr></thead>
+            <tbody>
+              <tr><td>Authentication boundary</td><td>No warehouse call before explicit run; missing/invalid/stale token is rejected; account switch aborts and clears.</td><td>Any previous-user row, count, field, lineage, or receipt remains visible or cached.</td></tr>
+              <tr><td>Row and field isolation</td><td>Positive and negative assertions for every identity at API-response level, including crafted record ids, tenants, products, purposes, and pipelines.</td><td>An unauthorized value reaches the browser, even if the UI hides it.</td></tr>
+              <tr><td>Schema and query safety</td><td>Explicit field allowlist, deny precedence, parameterized predicates, unknown sort/filter rejection, new-column test, bounded response.</td><td><code>SELECT *</code>, client-only filtering, SQL injection, or schema growth widens a view.</td></tr>
+              <tr><td>Large-store behavior</td><td>100,000 deterministic rows, cursor ordering by id, 50-row default, 100-row maximum, first/middle/last page, cancellation, and concurrent-account tests.</td><td>Unbounded fetch, duplicate/skipped page behavior under the defined consistency model, or cross-principal cache reuse.</td></tr>
+              <tr><td>Measured performance</td><td>Fixed-hardware p50/p95/p99 query and count latency, response bytes, memory, concurrency, timeout, database-unavailable, and recovery results.</td><td>An unmeasured “enterprise scale” claim or a budget breach in the agreed benchmark environment.</td></tr>
+              <tr><td>Evidence integrity</td><td>Actor, purpose, effect, visible/returned count, contract, capsule, allowed/denied fields, audit sequence, and hash—without credentials or record values.</td><td>Missing decision linkage, sensitive audit content, or a receipt that cannot be tied to the chained event.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>What the automated evidence means</h3>
+        <p>The local suites cover policy, API, web, login-to-policy, JIT lifecycle, persistence, and build behavior. They can prove only the code paths and fixtures they execute. They do not exercise a real SAP authorization object, BW analysis authorization, Elasticsearch role, ADF identity, warehouse-native RLS, or BI semantic model. Those claims require target-specific conformance environments and differential tests.</p>
+        <p class="note"><strong>Latest full gate · 16 August 2026:</strong> repository typechecks and production builds passed; 57 core + 83 API + 54 web tests passed (194 total); both the production-only and complete dependency audits reported 0 vulnerabilities.</p>
+      </section>
+
+      <section id="ready">
+        <h2>15. Current implementation versus production target</h2>
+        <div class="two">
+          <div class="card">
+            <h3>Current and locally verifiable</h3>
+            <ul>
+              <li>Deny-by-default PDP with live principal, purpose, action, capsule, contract, predicate, classification, and fields.</li>
+              <li>Parameterized local warehouse row scope and field projection over generated data.</li>
+              <li>Authenticated Access → Data workflow with no login-page data, an explicit run action, a 100,000-row four-pipeline unified store, Data Owner baseline, role-filtered pages, policy explanation, lineage summary, protected fields, and authorization receipt.</li>
+              <li>JIT contract snapshot, independent approval, row/class recheck, bounded expiry, and explicit revoke workflow.</li>
+              <li>Local membership removal and capsule cascade offboard with pre-removal compiler previews; no executable external revoke plan.</li>
+              <li>Deterministic compiler hash/version, eligible assignments, local capability gates, target-shaped previews, blocked deployment status, and empty apply/revoke/read-back arrays.</li>
+              <li>Role Studio deterministic parser, metadata preview, and request-only queue with required Data Owner + Governance Admin approvals; partial approval grants nothing and direct <code>/api/roles/apply</code> is disabled.</li>
+              <li>Three versioned warehouse SoD rules over standing plus candidate access, and manual exact-assignment recertification for active human memberships.</li>
+              <li>Separate S/4 extraction, BW activation, and sanitized ES telemetry workload principals with stage-specific least-privilege contracts.</li>
+              <li>Single-writer SQLite desired state, rollback on failed persistence, readiness probe, in-process chained audit, and verified one-node online backup/transactional restore.</li>
+              <li>Demo scrypt login; production mode rejects demo login and validates the HS256 broker contract. The browser uses tab-scoped <code>sessionStorage</code> and clears on expiry/401/account switch; the local HTML entry point installs a baseline document-level CSP.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Required before production</h3>
+            <ul>
+              <li>Enterprise OIDC/BFF with protected cookies, CSRF controls, a tested response-header CSP, SCIM/HR, MFA/step-up, managed/SPIFFE workload identity, rotation, and session revocation.</li>
+              <li>Catalog, schema, classification, owner, lineage, existing-entitlement, and access-path discovery.</li>
+              <li>Governed five-persona templates and typed shared scopes; catalog-derived owners; configurable, organization-specific SoD policy; and scheduled human/workload recertification with notifications and explicit overdue consequences.</li>
+              <li>Broader AuthZEN resources/context, richer obligation schema, PEP SDKs and conformance; signed policy releases and discovered/version-certified adapter capability manifests.</li>
+              <li>Live target plan/apply/revoke, read-back, rollback, drift, audit, and cross-target equivalence.</li>
+              <li>Transactional shared state, multi-replica PDP, outbox workers, externally anchored append-only audit, offsite/encrypted backup, point-in-time recovery, and regional recovery.</li>
+              <li>Real SAP/BW/ES/ADF/warehouse/BI conformance and bypass testing on the deployed versions and editions.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="note"><strong>Robustness claim:</strong> local tests demonstrate the local implementation. The current full-snapshot persistence path grows with retained audit history, and its mutable local hash chain is not an external anchor. Production robustness begins only when every real access path and target is certified, continuously reconciled, failure-tested, and independently security-reviewed.</p>
+      </section>
+
+      <section id="next">
+        <h2>16. Delivery roadmap and primary references</h2>
+        <ol>
+          <li><strong>Policy foundation.</strong> Finish five reusable capability-persona templates, typed DataScope, relationship rules, signed versions, obligation schema, and JIT negative invariants.</li>
+          <li><strong>Identity and catalog.</strong> Enterprise OIDC/SCIM, workload identity, governed inventory, owner, classification, schema, lineage, and existing-access ingestion.</li>
+          <li><strong>One real pilot.</strong> S/4 → BW process-chain/vendor monitoring → one target store → one BI model, with Vendor Ops, L2, Platform Ops, and JIT Audit.</li>
+          <li><strong>First certified adapter.</strong> Use the real warehouse first: plan, apply/revoke, read-back, drift, rollback, and PDP-versus-target differential tests.</li>
+          <li><strong>Expand deliberately.</strong> Add SAP/BW, Elasticsearch, ADF, and BI only after the adapter SDK and fidelity gate are proven. One complete adapter before another preview.</li>
+          <li><strong>Enterprise hardening.</strong> Multi-replica state, outbox workers, immutable audit, scale, recovery, chaos, independent threat review, and red-team testing.</li>
+        </ol>
+        <p class="note"><strong>Novelty, stated honestly:</strong> the individual controls are established patterns. The defensible product differentiation is a portable atomic access capsule, lineage-aware policy delivery, a fidelity firewall that refuses unsafe translations, access leases, and continuous proof that target state still matches policy. A claim that “nobody has done this” would require separate market and prior-art research.</p>
+
+        <h3>Primary standards and platform documentation</h3>
+        <ul class="source-list">
+          <li><a href="https://csrc.nist.gov/Projects/role-based-access-control/faqs">NIST RBAC model</a></li>
+          <li><a href="https://csrc.nist.gov/pubs/sp/800/162/upd2/final">NIST ABAC SP 800-162</a></li>
+          <li><a href="https://csrc.nist.gov/pubs/sp/800/207/final">NIST Zero Trust SP 800-207</a></li>
+          <li><a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final">NIST SP 800-53 Rev. 5, including Update 1</a></li>
+          <li><a href="https://openid.net/specs/authorization-api-1_0.html">OpenID Authorization API 1.0</a></li>
+          <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">OWASP Session Management Cheat Sheet</a></li>
+          <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html">OWASP Content Security Policy Cheat Sheet</a></li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc9700.html">OAuth Security BCP — RFC 9700</a></li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc7644.html">SCIM Protocol — RFC 7644</a></li>
+          <li><a href="https://spiffe.io/docs/latest/spiffe/concepts/">SPIFFE workload identity</a></li>
+          <li><a href="https://help.sap.com/docs/SAP_BW4HANA/107a6e8a38b74ede94c833ca3b7b6f51/4a4ce95baef40451e10000000a421937.html">SAP BW authorization concepts</a></li>
+          <li><a href="https://help.sap.com/docs/SAP_BPC_VERSION_BW4HANA/dd104a87ab9249968e6279e61378ff66/4a2c5023c16d47dbe10000000a42189c.html">SAP process-chain authorizations</a></li>
+          <li><a href="https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/controlling-access-at-document-field-level">Elastic DLS/FLS and limitations</a></li>
+          <li><a href="https://learn.microsoft.com/en-us/azure/data-factory/secure-your-azure-data-factory">Azure Data Factory security</a></li>
+          <li><a href="https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-security-report-consumer-planning">Power BI consumer security</a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer class="doc-foot">
+    <div>16 August 2026 · Project CCA · Contract Capsule Authorization</div>
+    <div>Standalone brief · sourced from packages/cca-core, apps/api, apps/web</div>
+  </footer>
+</body>
+</html>

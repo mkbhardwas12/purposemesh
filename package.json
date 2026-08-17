@@ -1,0 +1,50 @@
+{
+  "name": "cca",
+  "private": true,
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "Contract Capsule Authorization — control plane, PDP, compiler, and console",
+  "author": "Manish Kumar",
+  "homepage": "https://mkbhardwas12.github.io/contract-capsule-authorization/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkbhardwas12/contract-capsule-authorization.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mkbhardwas12/contract-capsule-authorization/issues"
+  },
+  "keywords": [
+    "authorization",
+    "rbac",
+    "abac",
+    "rebac",
+    "authzen",
+    "zero-trust",
+    "data-governance",
+    "policy-as-code"
+  ],
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run build -w @cca/core && concurrently -n api,web -c blue,green \"npm run dev -w @cca/api\" \"npm run dev -w @cca/web\"",
+    "start": "npm run start -w @cca/api",
+    "test": "npm run build -w @cca/core && npm run test --workspaces --if-present",
+    "test:core": "npm run test -w @cca/core",
+    "test:api": "npm run build -w @cca/core && npm run test -w @cca/api",
+    "test:web": "npm run test -w @cca/web",
+    "typecheck": "npm run build -w @cca/core && npm run typecheck --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "ops:control-plane": "npm run build -w @cca/api && node apps/api/dist/control-plane-ops-cli.js",
+    "preflight": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.8.3"
+  }
+}

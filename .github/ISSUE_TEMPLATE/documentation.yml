@@ -1,0 +1,26 @@
+name: Documentation improvement
+description: Improve clarity, examples, architecture, or public presentation.
+title: "[Docs]: "
+labels: [documentation]
+body:
+  - type: textarea
+    id: audience
+    attributes:
+      label: Audience and problem
+      description: Who is blocked or confused, and where?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Suggest the smallest clear change and any supporting example or diagram.
+    validations:
+      required: true
+  - type: checkboxes
+    id: claims
+    attributes:
+      label: Claim check
+      options:
+        - label: The proposal distinguishes implemented behavior from production targets.
+          required: true

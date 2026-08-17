@@ -1,0 +1,33 @@
+name: Adapter or policy proposal
+description: Propose a target adapter, policy capability, or conformance scenario.
+title: "[Proposal]: "
+labels: [proposal]
+body:
+  - type: input
+    id: target
+    attributes:
+      label: Target or capability
+      placeholder: SAP BW, Elasticsearch, API gateway, masking, purpose binding…
+    validations:
+      required: true
+  - type: textarea
+    id: native-controls
+    attributes:
+      label: Native controls and fidelity
+      description: Explain how action, rows, fields, masks, purpose/JIT, revocation, and audit can be represented.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Required evidence
+      description: Define apply/revoke, read-back, drift, rollback, retry, and PDP-equivalence tests.
+    validations:
+      required: true
+  - type: checkboxes
+    id: failclosed
+    attributes:
+      label: Fidelity firewall
+      options:
+        - label: Unsupported obligations will be rejected rather than silently weakened.
+          required: true

@@ -1,0 +1,32 @@
+node_modules
+dist
+build
+coverage
+.tmp/
+
+.env*
+!.env.example
+**/.env*
+!**/.env.example
+
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+.DS_Store
+.vite
+playwright-report
+test-results
+artifacts
+apps/web/playwright/.cache
+
+data/*.sqlite*
+data/*.db*
+data/backups/
+
+# Publish the reviewed briefing only; local deck drafts and inspection output
+# remain available in the workspace but are not part of the public repository.
+docs/*.pptx
+!docs/CCA-Modern-Complete-Briefing-Final.pptx
+docs/*.pptx.inspect.ndjson

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Contract Capsule Authorization</title>
+  <desc id="desc">One authorization contract for exact row, field, purpose, and lifecycle boundaries.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071417"/>
+      <stop offset="1" stop-color="#0d2324"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.08" r="0.7">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#58d8c8"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#background)"/>
+  <rect width="1280" height="640" fill="url(#glow)"/>
+  <path d="M0 90H1280M0 180H1280M0 270H1280M0 360H1280M0 450H1280M0 540H1280" stroke="#163336" stroke-width="1" opacity="0.45"/>
+  <path d="M160 0V640M320 0V640M480 0V640M640 0V640M800 0V640M960 0V640M1120 0V640" stroke="#163336" stroke-width="1" opacity="0.45"/>
+
+  <g transform="translate(70 58)">
+    <rect width="54" height="54" rx="15" fill="#0c3433" stroke="#25ad9f"/>
+    <path d="M27 12L39 17V27C39 35 34 41 27 44C20 41 15 35 15 27V17L27 12Z" fill="none" stroke="#2dd4bf" stroke-width="2.6"/>
+    <path d="M21.5 27L25.5 31L33.5 22" fill="none" stroke="#2dd4bf" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="72" y="25" fill="#f3f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="750">CCA</text>
+    <text x="72" y="48" fill="#8da1a4" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" letter-spacing="1.4">CONTRACT CAPSULE AUTHORIZATION</text>
+  </g>
+
+  <g transform="translate(70 170)">
+    <text fill="#f4f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="62" font-weight="780">
+      <tspan x="0" y="0">One authorization contract.</tspan>
+      <tspan x="0" y="74">Exact data boundaries.</tspan>
+    </text>
+    <text x="2" y="125" fill="#a9bbbd" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22">
+      Rows • fields • purpose • classification • lifecycle
+    </text>
+  </g>
+
+  <g transform="translate(70 400)" filter="url(#shadow)">
+    <g>
+      <rect width="190" height="112" rx="18" fill="#102327" stroke="#315057"/>
+      <text x="24" y="34" fill="#58d8c8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="1.8">VERIFIED SUBJECT</text>
+      <text x="24" y="68" fill="#f1f6f5" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">Identity + role</text>
+      <text x="24" y="92" fill="#91a5a8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">relationship facts</text>
+    </g>
+    <line x1="204" y1="56" x2="250" y2="56" stroke="#58d8c8" stroke-width="3" marker-end="url(#arrow)"/>
+    <g transform="translate(264)">
+      <rect width="230" height="112" rx="18" fill="#10302e" stroke="#2dd4bf" stroke-width="2"/>
+      <text x="24" y="34" fill="#58d8c8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="1.8">CONTRACT CAPSULE</text>
+      <text x="24" y="68" fill="#f1f6f5" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">Scope + context</text>
+      <text x="24" y="92" fill="#a7cfca" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">atomic and reviewable</text>
+    </g>
+    <line x1="508" y1="56" x2="554" y2="56" stroke="#58d8c8" stroke-width="3" marker-end="url(#arrow)"/>
+    <g transform="translate(568)">
+      <rect width="218" height="112" rx="18" fill="#102327" stroke="#315057"/>
+      <text x="24" y="34" fill="#58d8c8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="1.8">POLICY DECISION</text>
+      <text x="24" y="68" fill="#f1f6f5" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">Allow + obligations</text>
+      <text x="24" y="92" fill="#91a5a8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">or deny by default</text>
+    </g>
+  </g>
+
+  <g transform="translate(915 182)">
+    <rect width="295" height="330" rx="26" fill="#0b191d" stroke="#29434a" filter="url(#shadow)"/>
+    <text x="28" y="43" fill="#f2a23a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="750" letter-spacing="1.8">TESTED LOCAL EVIDENCE</text>
+    <text x="28" y="94" fill="#f4f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="780">194 / 194</text>
+    <text x="28" y="122" fill="#96aaad" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">automated checks passed</text>
+    <line x1="28" y1="150" x2="267" y2="150" stroke="#29434a"/>
+    <text x="28" y="198" fill="#f4f8f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="760">100,000</text>
+    <text x="28" y="225" fill="#96aaad" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">synthetic records tested</text>
+    <line x1="28" y1="253" x2="267" y2="253" stroke="#29434a"/>
+    <circle cx="38" cy="290" r="10" fill="#143c35" stroke="#42c9a5"/>
+    <path d="M33 290L37 294L44 286" fill="none" stroke="#5ee0bd" stroke-width="2" stroke-linecap="round"/>
+    <text x="58" y="296" fill="#c9d6d7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">Local enforcement today</text>
+  </g>
+
+  <text x="70" y="596" fill="#6f8589" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" letter-spacing="0.8">RBAC + ABAC + ReBAC • DUAL APPROVAL • FIDELITY FIREWALL • EXPLAINABLE EVIDENCE</text>
+</svg>
