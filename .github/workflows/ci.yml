@@ -30,10 +30,10 @@ jobs:
         run: |
           mkdir -p artifacts
           npm run preflight 2>&1 | tee artifacts/preflight.log
-      - name: Production dependency audit
+      - name: Dependency audit (runtime and development)
         if: always()
         shell: bash
-        run: npm audit --omit=dev --audit-level=high 2>&1 | tee artifacts/npm-audit.log
+        run: npm audit --audit-level=high 2>&1 | tee artifacts/npm-audit.log
       - name: Retain verification reports
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6

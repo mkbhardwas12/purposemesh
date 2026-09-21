@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, rmSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, realpathSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -153,7 +153,7 @@ describe("production safety boundaries", () => {
   });
 
   it("does not create or seed a missing production control-plane database", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-production-control-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-production-control-test-"));
     const path = join(directory, "control.sqlite");
     try {
       expect(() => new SqliteControlPlaneRepository(path, { requireExisting: true })).toThrow(/does not exist/);
@@ -171,7 +171,7 @@ describe("production safety boundaries", () => {
   });
 
   it("accepts a validated existing control-plane snapshot in production", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-existing-control-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-existing-control-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const provisioner = new SqliteControlPlaneRepository(path);
@@ -189,7 +189,7 @@ describe("production safety boundaries", () => {
   });
 
   it("reconciles an older v3 demo seed without replacing user-created or workflow state", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-demo-reconcile-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-demo-reconcile-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const provisioner = new SqliteControlPlaneRepository(path);
@@ -251,7 +251,7 @@ describe("production safety boundaries", () => {
   });
 
   it("never reconciles a persisted v3 snapshot in production", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-production-no-reconcile-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-production-no-reconcile-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const provisioner = new SqliteControlPlaneRepository(path);
@@ -277,7 +277,7 @@ describe("production safety boundaries", () => {
   });
 
   it("migrates an empty-JIT v2 snapshot only in demo/test and persists v3", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-v2-migration-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-v2-migration-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const provisioner = new SqliteControlPlaneRepository(path);
@@ -311,7 +311,7 @@ describe("production safety boundaries", () => {
   });
 
   it("refuses automatic v2 migration when any legacy JIT state exists", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-v2-jit-migration-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-v2-jit-migration-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const provisioner = new SqliteControlPlaneRepository(path);
@@ -329,7 +329,7 @@ describe("production safety boundaries", () => {
   });
 
   it("opens an existing production warehouse read-only without reseeding it", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-production-warehouse-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-production-warehouse-test-"));
     const path = join(directory, "warehouse.sqlite");
     try {
       const generated = openWarehouse({ path, rows: 12 });
@@ -349,7 +349,7 @@ describe("production safety boundaries", () => {
   });
 
   it("refuses to create a missing production warehouse", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-missing-warehouse-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-missing-warehouse-test-"));
     const path = join(directory, "warehouse.sqlite");
     try {
       expect(() => openWarehouse({ path, rows: 10, readOnly: true })).toThrow(/does not exist/);
@@ -360,7 +360,7 @@ describe("production safety boundaries", () => {
   });
 
   it("restricts newly created SQLite files", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-sqlite-mode-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-sqlite-mode-test-"));
     const controlPath = join(directory, "control.sqlite");
     const warehousePath = join(directory, "warehouse.sqlite");
     try {
@@ -380,7 +380,7 @@ describe("production safety boundaries", () => {
   });
 
   it("uses a durable readiness write without changing authorization state", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-readiness-write-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-readiness-write-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const repository = new SqliteControlPlaneRepository(path);

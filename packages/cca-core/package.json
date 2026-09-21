@@ -23,12 +23,14 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:fuzz": "vitest run test/authorization.fuzz.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
     "@types/node": "^24.2.0",
+    "fast-check": "^4.10.2",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.4"
+    "vitest": "~4.1.11"
   }
 }

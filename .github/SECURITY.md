@@ -10,7 +10,9 @@ a reference implementation and does not claim production certification.
 
 ## Report a vulnerability privately
 
-Use GitHub’s **Security → Report a vulnerability** flow for this repository.
+Use [GitHub’s private vulnerability reporting form](https://github.com/mkbhardwas12/purposemesh/security/advisories/new)
+for this repository (**Security → Report a vulnerability**). Private vulnerability
+reporting is enabled; reports are not public issues.
 Do not disclose a suspected vulnerability in a public issue, pull request,
 discussion, screenshot, or demo recording.
 
@@ -24,7 +26,10 @@ Include, when possible:
 
 You should receive an acknowledgement within five business days. Validation,
 remediation, disclosure timing, and credit will be coordinated through the
-private advisory.
+private advisory. If the reporting form is unavailable, follow
+[GitHub’s private-reporting instructions](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability)
+and wait for the private channel to become available; do not post exploit details
+publicly as a workaround.
 
 ## Safe-harbor intent
 

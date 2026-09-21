@@ -243,6 +243,76 @@ rotation, or HR connector.
   supported. Authorization continues to use current server-side state.
 - Network location alone never grants trust.
 
+## Request-rate and resource-exhaustion boundary
+
+The single-node API registers `@fastify/rate-limit` globally, before its routes,
+and enforces additional budgets immediately after verifying the principal.
+These controls apply in demo, test, and production modes. Each fixed 60-second
+window permits at most:
+
+| Budget | Default maximum | Identity used |
+| --- | ---: | --- |
+| All routed requests | 600 | Actual transport peer; IPv6 grouped by /64 |
+| Authenticated requests | 600 | Verified principal ID, shared across tokens |
+| Expensive reads/evaluations/previews | 300 | Verified principal ID |
+| Mutations | 30 | Verified principal ID |
+| Demo login attempts, successful or failed | 20 | Actual transport peer, across usernames |
+
+The existing five-failed-attempts-per-user/IP login lockout remains an additional
+restriction. Throttled requests return HTTP `429`, `code: rate_limited`, and a
+`Retry-After` header before protected queries, mutations, or audit snapshot
+writes. The legacy failed-login lockout retains its existing error contract.
+Limits do not grant access; authentication and authorization checks still apply.
+
+The transport budget deliberately ignores `X-Forwarded-For`, including when
+`CCA_TRUST_PROXY` is enabled. Behind a proxy, clients therefore share the proxy's
+IP budget while authenticated principal budgets remain separate. Configure
+trusted client-IP handling and per-client limits at the deployment gateway; do
+not trust arbitrary forwarding headers to obtain a larger budget.
+
+Counters are bounded and **process-local**. Each map tracks at most 10,000 keys;
+at capacity, new keys are rejected until an entry expires instead of evicting
+an active budget. This deliberately trades admission of new clients for a
+fail-closed limit. Restarts reset counters and replicas do not share them.
+A multi-replica production deployment additionally requires a
+tested shared limiter or ingress quota, connection/concurrency and response-size
+limits, capacity measurement, and upstream abuse protection. These controls do
+not claim to prevent distributed denial of service. Positive bounded overrides
+are available through `buildApp` for controlled integration tests, not as a
+disable flag or an implicit test-mode bypass.
+
+## Security regression and supply-chain checks
+
+CI typechecks, builds, runs all workspace tests, and audits runtime **and**
+development dependencies. A zero-advisory result describes the locked packages
+at the scan time, not a guarantee that the application has no vulnerabilities.
+CodeQL uses its extended security suite; findings are fixed and rescanned rather
+than suppressed to improve a score.
+
+The core suite uses `fast-check` for bounded, deterministic property-based
+fuzzing of SQL/predicate agreement, field-projection noninterference, deny
+monotonicity, field intersection, hostile property paths, and Unicode role names.
+The separate Authorization fuzzing workflow runs three seeds with 3,000 cases
+per property and retains seed/counterexample output. This is not a substitute
+for independent review, deployment testing, or a production penetration test.
+
+Changes to the default branch require a pull request, passing CI, CodeQL and
+dependency-review checks, and resolved conversations. Under the project's
+solo-maintainer policy, second-person review is optional: neither independent
+approval nor approval of the most recent push is required. Main-branch
+protection applies to administrators and disallows force pushes and deletion.
+The maintainer may merge through the protected pull-request workflow after its
+requirements pass; this is not two-person enforcement, and automated checks
+are not a substitute for independent human review.
+
+Scorecard measures both configuration and historical evidence. Review-related
+findings may remain under this policy; new checks cannot retroactively supply
+reviews for past commits, establish a maintenance history, or earn an external
+best-practices badge. Alert closure must be verified on a fresh scan of the
+merged revision, not inferred from local tests. This repository contribution
+policy does not weaken the application's separate two-reviewer standing-access
+approval requirements described above.
+
 ## Fidelity firewall
 
 The current local compiler calculates deterministic policy hash/version,
@@ -364,6 +434,24 @@ The current SQLite snapshot supports one API writer. Demo/test may auto-migrate
 v2→v3 only when no legacy JIT exists and every membership persona resolves from
 validated principals; production rejects v2 for reviewed offline migration.
 Successful local migration is itself audited.
+
+Disk-backed API databases require POSIX no-follow file/directory operations and
+a dedicated service identity with a trusted directory chain. Each component
+must be owned by the service UID or root, with no group/world writes; sticky
+shared ancestors are permitted, but the immediate database parent must not be
+shared-writable. Supply canonical paths rather than symlink aliases (on macOS,
+for example, use `/private/tmp` rather than `/tmp` when creating a private test
+directory). Symbolic links, multiply linked/non-regular files, unsafe sidecars,
+and ambiguous filenames are rejected. New files are created exclusively with
+mode `0600`; existing databases are not truncated or silently permission-fixed.
+
+The Node SQLite binding subsequently opens a pathname rather than accepting a
+prepared descriptor. These protections therefore rely on the trusted directory
+chain: a hostile process using the service UID/root, administrator-controlled
+mount changes, and filesystem ACL administration remain outside this boundary.
+They do not claim to defeat a compromised host. Windows disk-backed execution
+requires a separately reviewed platform implementation; memory-only tests are
+not evidence of Windows filesystem protection.
 
 The repository has a verified single-node backup/restore path for the control
 snapshot. Backup uses SQLite's online backup behavior, verifies the copy with the

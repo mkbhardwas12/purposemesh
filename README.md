@@ -87,7 +87,10 @@ read-back, rollback, drift, and equivalence tests.
 
 ## 90-second demo
 
-Requirements: Node.js 24+ and npm 11+.
+Requirements: Node.js 24+ and npm 11+. Disk-backed execution requires a POSIX
+host (Linux/macOS), canonical database paths, and a service-owned/root-owned
+directory chain with no untrusted writes; see the
+[filesystem security boundary](docs/SECURITY.md#availability-and-failure-behavior).
 
 ```bash
 git clone https://github.com/mkbhardwas12/purposemesh.git

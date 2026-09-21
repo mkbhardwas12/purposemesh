@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import Fastify, { type FastifyInstance, type FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
+import rateLimit from "@fastify/rate-limit";
 import {
   CLASS_RANK,
   DEFAULT_JIT_TTL_MS,
@@ -82,6 +83,15 @@ import {
   warehousePageQuerySchema,
 } from "./schemas.js";
 import { openWarehouse, scopesToFilter, type Warehouse } from "./warehouse.js";
+import {
+  RequestBudgets,
+  RequestRateLimitError,
+  boundedPeerStore,
+  requestCost,
+  requestRateLimits,
+  transportPeer,
+  type RequestRateLimits,
+} from "./rate-limits.js";
 
 type LoginRateLimit = {
   maxAttempts: number;
@@ -102,6 +112,7 @@ export type BuildAppOptions = {
   corsOrigins?: string[];
   trustProxy?: boolean;
   loginRateLimit?: Partial<LoginRateLimit>;
+  requestRateLimit?: Partial<RequestRateLimits>;
 };
 
 class ApiError extends Error {
@@ -188,7 +199,7 @@ function publicPrincipal(store: CcaStore, id: string) {
   };
 }
 
-async function authenticate(request: FastifyRequest, store: CcaStore): Promise<AccessToken> {
+async function authenticatePrincipal(request: FastifyRequest, store: CcaStore): Promise<AccessToken> {
   const header = request.headers.authorization;
   if (!header?.startsWith("Bearer ")) fail(401, "authentication_required", "missing bearer token");
   let actor: AccessToken;
@@ -468,6 +479,8 @@ export function buildApp(
   store: CcaStore = seedStore(),
   opts: BuildAppOptions = {},
 ): FastifyInstance {
+  const requestLimits = requestRateLimits(opts.requestRateLimit);
+  const requestBudgets = new RequestBudgets(requestLimits);
   const warehouse = opts.warehouse ?? openWarehouse({ path: ":memory:", rows: 2500 });
   const state = opts.state ?? createApiControlState();
   const persistence = opts.persistence;
@@ -496,6 +509,41 @@ export function buildApp(
       },
     },
   });
+
+  // Register directly at root before every route so both Fastify and CodeQL
+  // see the same real, global protection. No routes or test modes bypass it.
+  app.register(rateLimit, {
+    global: true,
+    hook: "onRequest",
+    max: requestLimits.ipMax,
+    timeWindow: requestLimits.windowMs,
+    store: boundedPeerStore(requestLimits.maxTrackedKeys),
+    skipOnError: false,
+    keyGenerator: transportPeer,
+    errorResponseBuilder: (_request, context) =>
+      new RequestRateLimitError(Math.max(1, Math.ceil(context.ttl / 1000))),
+  });
+  app.after(() => {
+    // buildApp is synchronous, so routes are declared before plugin boot. The
+    // root hook applies the plugin's shared limiter to those routes AND 404s.
+    // The plugin tracks execution per request, preventing double counting.
+    app.addHook("onRequest", app.rateLimit());
+  });
+
+  app.addHook("onRequest", async (request) => {
+    if (request.method === "POST" && request.routeOptions.url === "/api/auth/login") {
+      // Counts successful and failed attempts, across all supplied usernames,
+      // before body processing, password hashing, or audit persistence.
+      requestBudgets.consumeLogin(transportPeer(request));
+    }
+  });
+
+  async function authenticate(request: FastifyRequest, currentStore: CcaStore): Promise<AccessToken> {
+    const actor = await authenticatePrincipal(request, currentStore);
+    // Use verified identity, never a JWT string, request parameter, or asserted claim.
+    requestBudgets.consumePrincipal(actor.sub, requestCost(request));
+    return actor;
+  }
 
   app.register(cors, {
     origin: corsOrigins.length > 0 ? corsOrigins : false,
@@ -530,6 +578,13 @@ export function buildApp(
   };
 
   app.setErrorHandler((error, request, reply) => {
+    if (error instanceof RequestRateLimitError) {
+      return reply.header("retry-after", error.retryAfterSeconds).code(429).send({
+        error: error.message,
+        code: error.code,
+        requestId: request.id,
+      });
+    }
     const validation = (error as { validation?: unknown }).validation;
     if (validation) {
       return reply.code(400).send({
@@ -581,7 +636,7 @@ export function buildApp(
     if (!demoMode) return reply.code(404).send({ error: "not found", code: "not_found" });
     const body = request.body as { username: string; password: string };
     const now = Date.now();
-    const key = `${request.ip}\u0000${body.username.toLowerCase()}`;
+    const key = `${transportPeer(request)}\u0000${body.username.toLowerCase()}`;
     for (const [trackedKey, tracked] of loginAttempts) {
       if (tracked.blockedUntil <= now && now - tracked.windowStart >= loginLimit.windowMs) {
         loginAttempts.delete(trackedKey);

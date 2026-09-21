@@ -123,11 +123,24 @@ export function emptyRoleDraft(): RoleDraft {
 }
 
 export function slugifyRoleName(name: string): string {
-  const slug = name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 40);
+  // Lowercase the whole string first to preserve Unicode's contextual mappings.
+  // Each code unit is then visited at most once and output is bounded to 40;
+  // unlike an unanchored trailing-separator regexp, there is no backtracking.
+  const lower = name.toLowerCase();
+  let slug = "";
+  let separatorPending = false;
+  for (let index = 0; index < lower.length && slug.length < 40; index += 1) {
+    const code = lower.charCodeAt(index);
+    if ((code >= 97 && code <= 122) || (code >= 48 && code <= 57)) {
+      // Only materialize a separator when another word follows. Truncation may
+      // retain this separator at position 40, matching trim-before-slice behavior.
+      if (separatorPending) slug += "-";
+      if (slug.length < 40) slug += lower[index];
+      separatorPending = false;
+    } else if (slug.length > 0) {
+      separatorPending = true;
+    }
+  }
   return slug || `draft-${Date.now()}`;
 }
 

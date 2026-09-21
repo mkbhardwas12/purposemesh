@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -8,7 +8,7 @@ import { openWarehouse, UNIFIED_DATA_STORE } from "../src/warehouse.js";
 
 describe("unified synthetic warehouse", () => {
   it("deterministically builds at least 100,000 rows across every named pipeline", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-unified-warehouse-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-unified-warehouse-test-"));
     const path = join(directory, "warehouse.sqlite");
     const warehouse = openWarehouse({ path, rows: 100_000 });
     try {
@@ -53,7 +53,7 @@ describe("unified synthetic warehouse", () => {
   }, 30_000);
 
   it("normalizes a legacy store label in API results without rewriting persisted facts", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-legacy-warehouse-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-legacy-warehouse-test-"));
     const path = join(directory, "warehouse.sqlite");
     const seeded = openWarehouse({ path, rows: 4 });
     seeded.close();

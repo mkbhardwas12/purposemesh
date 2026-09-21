@@ -9,6 +9,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
   statSync,
   unlinkSync,
@@ -101,7 +102,7 @@ export async function inspectControlPlaneDatabase(path: string): Promise<Control
     source.close();
   }
 
-  const validationDirectory = mkdtempSync(join(tmpdir(), "cca-control-validate-"));
+  const validationDirectory = mkdtempSync(join(realpathSync(tmpdir()), "cca-control-validate-"));
   const validationPath = join(validationDirectory, DATABASE_FILE);
   try {
     const validationSource = new DatabaseSync(databasePath, { readOnly: true });
