@@ -217,8 +217,14 @@ describe.skipIf(process.platform === "win32")("SQLite filesystem boundary", () =
     });
     restrictNewSqliteFiles(path, true);
     expect(raced).toBe(true);
-    expect(fs.statSync(target).mode & 0o777).toBe(0o644);
     expect(fs.statSync(moved).mode & 0o777).toBe(0o600);
-    expect(fs.readFileSync(target, "utf8")).toBe("preserved");
+    const targetDescriptor = fs.openSync(target, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
+    try {
+      // Inspect and read the same inode, even in the regression test.
+      expect(fs.fstatSync(targetDescriptor).mode & 0o777).toBe(0o644);
+      expect(fs.readFileSync(targetDescriptor, "utf8")).toBe("preserved");
+    } finally {
+      fs.closeSync(targetDescriptor);
+    }
   });
 });
