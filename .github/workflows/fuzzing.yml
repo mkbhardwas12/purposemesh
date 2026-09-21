@@ -1,0 +1,60 @@
+name: Authorization fuzzing
+
+on:
+  pull_request:
+    paths:
+      - "packages/cca-core/**"
+      - "package-lock.json"
+      - ".github/workflows/fuzzing.yml"
+  push:
+    branches: [main]
+    paths:
+      - "packages/cca-core/**"
+      - "package-lock.json"
+      - ".github/workflows/fuzzing.yml"
+  schedule:
+    - cron: "17 6 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: authorization-fuzzing-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  properties:
+    name: Security properties (seed ${{ matrix.seed }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [20260920, 73419, -184924771]
+    env:
+      PURPOSEMESH_FUZZ_SEED: ${{ matrix.seed }}
+      PURPOSEMESH_FUZZ_RUNS: 3000
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Generate and shrink authorization cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          npm run test -w @cca/core -- test/authorization.fuzz.test.ts 2>&1 | tee artifacts/fuzzing.log
+      - name: Retain result and counterexample replay information
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: authorization-fuzzing-${{ matrix.seed }}
+          path: artifacts/fuzzing.log
+          if-no-files-found: warn
+          retention-days: 14

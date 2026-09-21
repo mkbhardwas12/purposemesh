@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   applyRoleDraft,
   compileScopeToSql,
@@ -107,5 +107,36 @@ describe("applyRoleDraft", () => {
 
   it("slugifies role names for stable ids", () => {
     expect(slugifyRoleName("EU Ops / Night")).toBe("eu-ops-night");
+  });
+});
+
+describe("role name slug security regressions", () => {
+  it.each([
+    ["--- Admin___READ!!! ", "admin-read"],
+    ["Café İ K ΣΟΣ\u0000Team", "caf-i-k-team"],
+    ["a".repeat(39) + " / b", "a".repeat(39) + "-"],
+    ["a".repeat(39) + " / ", "a".repeat(39)],
+    ["a".repeat(40) + " / b", "a".repeat(40)],
+    ["😀\ud800\udfffABC", "abc"],
+  ])("preserves normalized and truncated output for %j", (name, expected) => {
+    expect(slugifyRoleName(name)).toBe(expected);
+  });
+
+  it("preserves the timestamp fallback for names without ASCII letters or digits", () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(1720000000000);
+    try {
+      for (const name of ["", "---", "你好 😀", "\ud800\udfff", "!".repeat(100_000)]) {
+        expect(slugifyRoleName(name)).toBe("draft-1720000000000");
+      }
+    } finally {
+      now.mockRestore();
+    }
+  });
+
+  it("handles long separator runs and many interior boundaries without regex retries", () => {
+    const separators = "_ -😀\n".repeat(100_000);
+    expect(slugifyRoleName(separators + "A" + separators + "B" + separators)).toBe("a-b");
+    expect(slugifyRoleName("-a".repeat(100_000))).toBe("a-".repeat(20));
+    expect(slugifyRoleName("a" + separators)).toBe("a");
   });
 });

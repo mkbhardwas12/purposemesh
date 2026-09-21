@@ -21,13 +21,26 @@ PurposeMesh requires Node.js 24+ and npm 11+.
 ```bash
 npm ci
 npm run preflight
-npm audit --omit=dev --audit-level=high
+npm audit --audit-level=high
+npm run test:fuzz -w @cca/core
 ```
 
 `preflight` runs all workspace typechecks, tests, and production builds. A pull
 request should not weaken deny-by-default behavior, field projection, purpose
 binding, reviewer independence, token invalidation, rollback, or capability
 gating. Use `npm ci` for a lockfile-reproducible install before verification.
+
+Development tools are part of the supply chain: CI audits both production and
+development dependencies. Authorization property tests run with deterministic
+seeds in the normal suite and with additional seeds in the fuzzing workflow.
+Keep a failing seed and minimized counterexample when reporting a failure.
+
+Changes to `main` must use a pull request, pass the required CI and CodeQL
+checks, resolve review conversations, and receive an independent human
+approval. New commits invalidate stale approvals. Automated coding or review
+assistance does not replace that approval, and administrator access is not a
+review bypass. A sole maintainer must arrange an eligible independent reviewer
+before merging; do not self-approve or disable protections to clear a score.
 
 ## Pull-request expectations
 

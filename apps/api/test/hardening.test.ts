@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -815,7 +815,7 @@ describe("API hardening", () => {
 
 describe("SQLite control-plane persistence", () => {
   it("restores applied roles, requests, JIT state, and audit sequence", async () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-control-plane-test-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-control-plane-test-"));
     const path = join(directory, "control.sqlite");
     try {
       const repository = new SqliteControlPlaneRepository(path);

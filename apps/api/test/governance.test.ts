@@ -1,5 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -549,7 +549,7 @@ describe("recurring access recertification", () => {
 
 describe("governance persistence migration", () => {
   it("migrates v1 API state to dual approval and initializes recertification state", () => {
-    const directory = mkdtempSync(join(tmpdir(), "cca-governance-migration-"));
+    const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-governance-migration-"));
     directories.push(directory);
     const path = join(directory, "control.sqlite");
     const repository = new SqliteControlPlaneRepository(path);
@@ -654,7 +654,7 @@ describe("governance persistence migration", () => {
     ];
 
     for (const testCase of cases) {
-      const directory = mkdtempSync(join(tmpdir(), "cca-governance-invalid-"));
+      const directory = mkdtempSync(join(realpathSync(tmpdir()), "cca-governance-invalid-"));
       directories.push(directory);
       const path = join(directory, "control.sqlite");
       const repository = new SqliteControlPlaneRepository(path);
