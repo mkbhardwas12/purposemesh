@@ -296,11 +296,22 @@ The separate Authorization fuzzing workflow runs three seeds with 3,000 cases
 per property and retains seed/counterexample output. This is not a substitute
 for independent review, deployment testing, or a production penetration test.
 
-Changes to the default branch require CI, CodeQL, resolved conversations, and an
-independent approval. Main-branch protection applies to administrators and
-disallows force pushes and deletion. Scorecard measures both configuration and
-historical evidence: new protections cannot retroactively supply reviews for
-past commits or give a new project a maintenance history.
+Changes to the default branch require a pull request, passing CI, CodeQL and
+dependency-review checks, and resolved conversations. Under the project's
+solo-maintainer policy, second-person review is optional: neither independent
+approval nor approval of the most recent push is required. Main-branch
+protection applies to administrators and disallows force pushes and deletion.
+The maintainer may merge through the protected pull-request workflow after its
+requirements pass; this is not two-person enforcement, and automated checks
+are not a substitute for independent human review.
+
+Scorecard measures both configuration and historical evidence. Review-related
+findings may remain under this policy; new checks cannot retroactively supply
+reviews for past commits, establish a maintenance history, or earn an external
+best-practices badge. Alert closure must be verified on a fresh scan of the
+merged revision, not inferred from local tests. This repository contribution
+policy does not weaken the application's separate two-reviewer standing-access
+approval requirements described above.
 
 ## Fidelity firewall
 

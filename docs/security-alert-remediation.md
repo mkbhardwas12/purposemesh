@@ -1,8 +1,10 @@
 # Security-alert remediation — September 2026
 
-This change addresses the security dashboard findings on the public default
-branch. A pull-request fix is not a default-branch fix until it is reviewed,
-merged, and rescanned. No alerts are dismissed or suppressed by this change.
+This report maps remediation work to security dashboard findings on the public
+default branch; it does not claim that every alert is closed. A pull-request
+fix is not a default-branch fix until it passes the protected pull-request
+requirements, is merged, and is rescanned. No alerts are dismissed or suppressed
+by this change.
 
 ## Finding-to-control mapping
 
@@ -12,10 +14,10 @@ merged, and rescanned. No alerts are dismissed or suppressed by this change.
 | Filesystem race (#39) | Exclusive atomic creation; no-follow opens and descriptor checks; trusted directory/sidecar validation; no check-then-create branch | SQLite path regression tests, persistence and recovery suites; trusted-host limitation documented |
 | Polynomial regular expression (#1) | Linear role-name scanner with bounded output | Long-input, Unicode, and generated-equivalence tests |
 | Vulnerabilities (#46) | Fastify 5.12.5, Vitest 4.1.11, fast-uri 4.2.1 and 3.1.8 locked; CI audits development dependencies too | Full and runtime-only npm audits; OSV/Scorecard must rescan the merged lockfile |
-| Branch protection (#40) | Main requires CI/CodeQL, one independent approval, last-push approval, stale-review dismissal, resolved conversations, and administrator enforcement; force pushes/deletion disabled | GitHub configuration was read back; the automatic Scorecard run marked alert #40 fixed |
+| Branch protection (#40) | Solo-maintainer policy requires pull requests, CI, CodeQL, dependency review, resolved conversations, and administrator enforcement; force pushes/deletion disabled; second-person and last-push approval not required | Verify live settings and fresh post-merge Scorecard results; review-related protection scores may remain lower without required human approval |
 | Security policy (#41) | Direct private-reporting and reporting-help links in `.github/SECURITY.md` | Private reporting verified enabled; merged-policy rescan required |
 | Fuzzing (#42) | Actual fast-check security properties in TypeScript; scheduled and PR CI with three reproducible seeds | Pinned Scorecard v5.5.0 supports this integration; bounded property testing, not coverage-guided or external certification |
-| Code review (#43) | Independent approval is now enforced for future main changes | Historical unreviewed commits remain historical; eligible human reviewer required before this PR can merge |
+| Code review (#43) | Protected pull requests and mandatory checks remain; independent human review is encouraged but optional under the solo-maintainer policy | No two-person enforcement is claimed. Historical unreviewed commits remain historical, and this finding may remain open; automated checks alone do not establish independent review |
 | Maintained (#44) | Documented contributor/review workflow and recurring CI/security checks | Repository was created 2026-08-17; the under-90-day heuristic cannot be removed honestly by changing code. Continue real maintenance and reassess after the age window |
 | OpenSSF Best Practices badge (#45) | Owner checklist below | Requires an owner-led, truthful external assessment; no badge is claimed |
 
@@ -40,12 +42,15 @@ production readiness or absence of all vulnerabilities.
 
 ## Owner actions that cannot be fabricated
 
-1. Arrange an eligible independent human reviewer for the security pull request.
-   The repository currently has only its owner as a collaborator. Do not add a
-   person or grant repository access without the owner's explicit choice.
-2. After approval, merge through the protected-branch workflow and verify fresh
-   CodeQL and Scorecard results on the merge commit. Do not disable reviews or
-   dismiss unresolved findings just to reduce the count.
+1. Open or update the security pull request, inspect the diff and evidence, and
+   satisfy the required CI, CodeQL, dependency-review checks, and conversation
+   resolution requirements on its latest revision. Local passing tests do not
+   replace the required GitHub checks. A second-person review is welcome but
+   is not a merge requirement under the approved solo-maintainer policy.
+2. Merge through the protected pull-request workflow once its requirements pass,
+   then verify fresh CodeQL, Scorecard, and vulnerability results against the
+   merge commit. Keep remaining findings tracked; do not bypass required checks,
+   fabricate review evidence, or dismiss unresolved findings to reduce a count.
 3. Start the [OpenSSF Best Practices assessment](https://www.bestpractices.dev/)
    under the maintainer's own identity. Review every applicable criterion and
    link concrete evidence: license, contribution process, working build/test
