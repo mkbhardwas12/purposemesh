@@ -544,6 +544,7 @@ unit test.
 
 ```bash
 npm run preflight
+npm audit --audit-level=high
 npm audit --omit=dev --audit-level=high
 ```
 
@@ -552,11 +553,14 @@ checks verify local behavior only. They do not prove SAP, BW, Elasticsearch,
 ADF, warehouse-native, or BI enforcement because no live adapters or target
 conformance environments are present.
 
-Latest full run (16 August 2026): typechecks and production builds passed; 196
-tests passed (57 core, 84 API, 55 web). There were **no known vulnerabilities
-reported by `npm audit` on 16 August 2026** in the complete and production-only
-dependency scans. This is point-in-time dependency evidence, not proof that the
-application or its future integrations are vulnerability-free.
+Latest local full run (21 October 2026, America/Chicago, macOS, Node.js 24.18.0, npm 11.16.0):
+typechecks and production builds passed; 267 tests passed (72 core, 133 API,
+62 web). The three CI fuzz seeds each passed all seven properties with 3,000
+runs per property. The complete and production-only `npm audit` scans reported
+**zero known vulnerabilities on 21 October 2026**. Audit development dependencies
+too: build and test tooling are part of the supply chain. This is point-in-time
+local evidence, not a replacement for the required GitHub checks or proof that
+the application or its future integrations are vulnerability-free.
 
 ## Standards references
 

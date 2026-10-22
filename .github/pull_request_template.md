@@ -9,6 +9,7 @@
 ## Evidence
 
 - [ ] `npm run preflight`
+- [ ] `npm audit --audit-level=high`
 - [ ] `npm audit --omit=dev --audit-level=high`
 - [ ] Allow and deny paths tested
 - [ ] Documentation updated when a guarantee or boundary changed
