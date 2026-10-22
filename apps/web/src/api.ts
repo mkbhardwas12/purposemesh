@@ -464,32 +464,41 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const timeout = window.setTimeout(() => controller.abort(), 20_000);
   const abort = () => controller.abort();
   init.signal?.addEventListener("abort", abort, { once: true });
+  if (init.signal?.aborted) controller.abort();
 
-  let response: Response;
   try {
-    response = await fetch(path, { ...init, headers, signal: controller.signal });
+    controller.signal.throwIfAborted();
+    const response = await fetch(path, { ...init, headers, signal: controller.signal });
+    // The request remains cancellable until its body has finished arriving.
+    const body = await response.json().catch((error: unknown) => {
+      if (controller.signal.aborted) throw error;
+      return {};
+    });
+    controller.signal.throwIfAborted();
+    if (!response.ok) {
+      const payload = body as { error?: string; message?: string; code?: string; details?: unknown };
+      // A delayed response from a previous account must not clear a newer login.
+      if (response.status === 401 && token && token === getToken()) {
+        window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+      }
+      throw new ApiError(
+        payload.error ?? payload.message ?? `Request failed (HTTP ${response.status})`,
+        response.status,
+        payload.code,
+        payload.details,
+      );
+    }
+    return body as T;
   } catch (error) {
     if (controller.signal.aborted) {
       throw new ApiError(init.signal?.aborted ? "Request cancelled" : "Request timed out");
     }
+    if (error instanceof ApiError) throw error;
     throw new ApiError(error instanceof Error ? error.message : "Network request failed");
   } finally {
     window.clearTimeout(timeout);
     init.signal?.removeEventListener("abort", abort);
   }
-
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const payload = body as { error?: string; message?: string; code?: string; details?: unknown };
-    if (response.status === 401 && token) window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
-    throw new ApiError(
-      payload.error ?? payload.message ?? `Request failed (HTTP ${response.status})`,
-      response.status,
-      payload.code,
-      payload.details,
-    );
-  }
-  return body as T;
 }
 
 function pagedPath(path: string, input: PaginationInput): string {
