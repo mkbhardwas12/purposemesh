@@ -30,7 +30,8 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "examples/*"
   ],
   "scripts": {
     "dev": "npm run build -w @cca/core && concurrently -n api,web -c blue,green \"npm run dev -w @cca/api\" \"npm run dev -w @cca/web\"",
